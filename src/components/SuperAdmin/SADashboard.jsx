@@ -1,4 +1,4 @@
-import AdminSidebar from "./AdminSidebar";
+import SASidebar from "./SASidebar";
 import React, { useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
 import {
@@ -25,7 +25,7 @@ ChartJS.register(
   Legend
 );
 
-const AdminDashboard = () => {
+const SADashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState("JUNE 2024");
   const [weeklyComparisonView, setWeeklyComparisonView] =
     useState("Weekly Comparison");
@@ -103,18 +103,6 @@ const AdminDashboard = () => {
     ],
   };
 
-  // DAF Forms data
-  const dafData = {
-    labels: ["M", "T", "W", "T", "F", "S", "Sun"],
-    datasets: [
-      {
-        label: "Submitted Forms",
-        data: [4, 3, 4, 4, 2, 1, 1],
-        backgroundColor: "rgb(59, 130, 246)",
-      },
-    ],
-  };
-
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -137,7 +125,7 @@ const AdminDashboard = () => {
     <>
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
         <div className="w-64 fixed top-0 left-0 h-full bg-white shadow-lg z-10">
-          <AdminSidebar />
+          <SASidebar />
         </div>
         <div className="flex-1 flex flex-col ml-64 pl-6 pt-4">
           <main className="flex-1 overflow-auto">
@@ -240,57 +228,6 @@ const AdminDashboard = () => {
                   </div>
                   <Bar data={familyData} options={chartOptions} />
                 </div>
-
-                {/* DAF Forms */}
-                <div className="bg-white p-4 rounded-lg shadow">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">
-                      Submitted DAF Forms
-                    </h2>
-                    <div className="flex items-center">
-                      <button
-                        className="px-2"
-                        onClick={() =>
-                          handleDateChange(
-                            new Date(
-                              dafFormsWeek.setDate(dafFormsWeek.getDate() - 7)
-                            ),
-                            setDafFormsWeek
-                          )
-                        }
-                      >
-                        ←
-                      </button>
-                      <p className="mx-4 text-sm">
-                        {`${dafFormsWeek.toLocaleDateString("en-US", {
-                          month: "long",
-                          day: "numeric",
-                        })} - 
-                  ${new Date(
-                    dafFormsWeek.getTime() + 6 * 24 * 60 * 60 * 1000
-                  ).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}`}
-                      </p>
-                      <button
-                        className="px-2"
-                        onClick={() =>
-                          handleDateChange(
-                            new Date(
-                              dafFormsWeek.setDate(dafFormsWeek.getDate() + 7)
-                            ),
-                            setDafFormsWeek
-                          )
-                        }
-                      >
-                        →
-                      </button>
-                    </div>
-                  </div>
-                  <Bar data={dafData} options={chartOptions} height={200} />
-                </div>
               </div>
             </div>
           </main>
@@ -300,4 +237,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default SADashboard;

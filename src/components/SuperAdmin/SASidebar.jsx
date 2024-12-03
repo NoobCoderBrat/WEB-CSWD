@@ -1,24 +1,21 @@
 import { useState } from "react";
 import {
-  FaSignOutAlt,
-  FaPhoneAlt,
-  FaUser,
-  FaHospitalAlt,
+  FaHome,
+  FaUniversity,
   FaRegFileAlt,
-  FaTachometerAlt,
+  FaUserShield,
+  FaBell,
+  FaPhone,
+  FaUser,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-const AdminSidebar = () => {
+const SASidebar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isFormsOpen, setIsFormsOpen] = useState(false); // For the dropdown menu
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const toggleFormsMenu = () => {
-    setIsFormsOpen(!isFormsOpen);
   };
 
   return (
@@ -42,71 +39,74 @@ const AdminSidebar = () => {
         <div className="lg:hidden bg-white shadow-md">
           <ul className="menu p-4 space-y-3">
             <NavLink
-              to="/admindashboard"
+              to="/sadashboard"
               className={({ isActive }) =>
                 isActive
                   ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
-                  : "text-lg text-txt flex items-center gap-2"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
               }
             >
-              <FaTachometerAlt /> Dashboard
+              <FaHome /> Dashboard
             </NavLink>
             <NavLink
-              to="/adminevacuation"
+              to="/saevacuation"
               className={({ isActive }) =>
                 isActive
                   ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
-                  : "text-lg text-txt flex items-center gap-2"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
               }
             >
-              <FaHospitalAlt /> Evacuation Center
+              <FaUniversity /> Evacuation Center
             </NavLink>
-            <div>
-              <button
-                onClick={toggleFormsMenu}
-                className="text-lg text-txt flex items-center gap-2 w-full text-left"
-              >
-                <FaRegFileAlt /> Forms
-                <span className="ml-auto">{isFormsOpen ? "▲" : "▼"}</span>
-              </button>
-              {isFormsOpen && (
-                <ul className="pl-6 space-y-2 mt-2">
-                  <NavLink
-                    to="/master-list-daf"
-                    className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                  >
-                    Master List of DAF
-                  </NavLink>
-                  <NavLink
-                    to="/in-evacuaees"
-                    className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                  >
-                    IN Evacuees
-                  </NavLink>
-                  <NavLink
-                    to="/out-evacuaees"
-                    className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                  >
-                    OUT Evacuees
-                  </NavLink>
-                  <NavLink
-                    to="/list-of-landlords"
-                    className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                  >
-                    List of Landlords
-                  </NavLink>
-                </ul>
-              )}
-            </div>
             <NavLink
-              to="/hotlines"
+              to="/sadaf"
               className={({ isActive }) =>
                 isActive
                   ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
-                  : "text-lg text-txt flex items-center gap-2"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
               }
             >
-              <FaPhoneAlt /> Hotlines
+              <FaRegFileAlt /> DA Form
+            </NavLink>
+            <NavLink
+              to="/adminaccounts"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
+              }
+            >
+              <FaUserShield /> Admin Accounts
+            </NavLink>
+            <NavLink
+              to="/notice"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
+              }
+            >
+              <FaBell /> Evacuation Notice
+            </NavLink>
+            <NavLink
+              to="/sahotlines"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
+              }
+            >
+              <FaPhone /> Hotlines
+            </NavLink>
+            <NavLink
+              to="/saprofile"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
+              }
+            >
+              <FaUser /> Profile
             </NavLink>
             <NavLink
               to="/"
@@ -142,78 +142,71 @@ const AdminSidebar = () => {
         </div>
         <ul className="menu menu-vertical flex-grow p-6 space-y-4 mt-3 font-bold">
           <NavLink
-            to="/admindashboard"
+            to="/sadashboard"
             className={({ isActive }) =>
               isActive
                 ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
                 : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
             }
           >
-            <FaTachometerAlt /> Dashboard
+            <FaHome /> Dashboard
           </NavLink>
           <NavLink
-            to="/adminevacuation"
+            to="/saevacuation"
             className={({ isActive }) =>
               isActive
                 ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
                 : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
             }
           >
-            <FaHospitalAlt /> Evacuation Center
+            <FaUniversity /> Evacuation Center
           </NavLink>
-          <div>
-            <button
-              onClick={toggleFormsMenu}
-              className="text-lg text-txt flex items-center gap-2 w-full text-left"
-            >
-              <FaRegFileAlt /> Forms
-              <span className="ml-auto">{isFormsOpen ? "▲" : "▼"}</span>
-            </button>
-            {isFormsOpen && (
-              <ul className="pl-6 space-y-2 mt-2">
-                <NavLink
-                  to="/master-list-daf"
-                  className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                >
-                  Master List of DAF
-                </NavLink>
-                <NavLink
-                  to="/in-evacuaees"
-                  className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                >
-                  IN Evacuees
-                </NavLink>
-                <NavLink
-                  to="/out-evacuaees"
-                  className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                >
-                  OUT Evacuees
-                </NavLink>
-                <NavLink
-                  to="/list-of-landlords"
-                  className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
-                >
-                  List of Landlords
-                </NavLink>
-              </ul>
-            )}
-          </div>
           <NavLink
-            to="/hotlines"
+            to="/sadaf"
             className={({ isActive }) =>
               isActive
                 ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
                 : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
             }
           >
-            <FaPhoneAlt /> Hotlines
+            <FaRegFileAlt /> DA Form
           </NavLink>
           <NavLink
-            to="/adminprofile"
+            to="/adminaccounts"
             className={({ isActive }) =>
               isActive
                 ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
                 : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
+            }
+          >
+            <FaUserShield /> Admin Accounts
+          </NavLink>
+          <NavLink
+            to="/notice"
+            className={({ isActive }) =>
+              isActive
+                ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
+                : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
+            }
+          >
+            <FaBell /> Evacuation Notice
+          </NavLink>
+          <NavLink
+            to="/sahotlines"
+            className={({ isActive }) =>
+              isActive
+                ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
+                : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
+            }
+          >
+            <FaPhone /> Hotlines
+          </NavLink>
+          <NavLink
+            to="/saprofile"
+            className={({ isActive }) =>
+              isActive
+                ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
+                : "text-lg text-txt flex items-center gap-2 active:opacity-20"
             }
           >
             <FaUser /> Profile
@@ -241,4 +234,4 @@ const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar;
+export default SASidebar;
