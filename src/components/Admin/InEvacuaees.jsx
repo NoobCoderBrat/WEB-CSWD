@@ -1,44 +1,115 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import supabase from "../supabaseClient";
+import * as XLSX from "xlsx";
 const INEvacuaees = () => {
   const [selectedBarangay, setSelectedBarangay] = useState("Brgy. Buhangin");
   const [selectedDate, setSelectedDate] = useState("2024-06-05");
+  const [evacuees, setEvacuees] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [senior, setSenior] = useState("");
+  const [pwd, setPWD] = useState("");
+  const [student, setStudent] = useState("");
+  const [ps, set4ps] = useState("");
+  const [ip, setIp] = useState("");
+  
+   
 
   const stats = [
     {
       icon: "👴",
       label: "Senior Citizen",
-      count: 26,
+      count: senior,
       textColor: "text-blue-600",
     },
-    { icon: "♿", label: "PWD", count: 15, textColor: "text-red-600" },
-    { icon: "👨‍🎓", label: "Students", count: 15, textColor: "text-blue-600" },
-    { icon: "👥", label: "4Ps Member", count: 48, textColor: "text-blue-600" },
+    { icon: "♿", label: "PWD", count: pwd, textColor: "text-red-600" },
+    { icon: "👨‍🎓", label: "Students", count: student, textColor: "text-blue-600" },
+    { icon: "👥", label: "4Ps Member", count: ps, textColor: "text-blue-600" },
     {
       icon: "👤",
       label: "Indigenous People",
-      count: 3,
+      count: ip,
       textColor: "text-blue-600",
     },
-    { icon: "🤰", label: "Pregnant", count: 8, textColor: "text-blue-600" },
   ];
 
-  const evacuees = [
-    {
-      id: 1,
-      name: "Pepito Manaloto",
-      sex: "Male",
-      evacuationCenter: "Butuan Central Elementary School",
-      submittedDate: "June 5, 2024",
-      submittedTime: "9:45AM",
-    },
-  ];
+
 
   const handleExportExcel = () => {
-    // Handle Excel export logic here
-    console.log("Exporting to Excel...");
+    if (evacuees.length === 0) {
+      alert("No data available to export.");
+      return;
+    }
+  
+    // Prepare the data for Excel
+    const worksheetData = evacuees.map((evacuee) => ({
+      No: evacuee.id,
+      Name: evacuee.name,
+      Sex: evacuee.sex,
+      "Evacuation Center": evacuee.evacuation_center,
+      Date: evacuee.date,
+      "Time IN": evacuee.time_in,
+      "Time OUT": evacuee.time_out,
+    }));
+  
+    // Create a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+  
+    // Create a workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Evacuees");
+  
+    // Export to Excel
+    XLSX.writeFile(workbook, "Evacuees.xlsx");
   };
+
+  const fetch_data = async () => {
+    try {
+      const { error, data } = await supabase.from("Evacuees").select("*");
+      if (error) throw error;
+      setEvacuees(data); 
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
+  };
+
+  const fetch_masterlist = async () => {
+    try {
+      const { error, data } = await supabase.from("DAF").select("*");
+      if (error) throw error;
+
+      const elder = data.filter(item => {
+        const age = parseInt(item.age);
+        return age >= 60;
+      }).length;
+      setSenior(elder);
+
+      const pwd = data.filter(item => {return item.disability !== 'N/A' ;}).length;
+      setPWD(pwd);
+      const student = data.filter(item => {return item.occupation == 'Student' ;}).length;
+      setStudent(student);
+      const ps = data.filter(item => {return item.status == '4ps' ;}).length;
+      set4ps(ps);
+      const ip = data.filter(item => {return item.status == 'ip' ;}).length;
+      setIp(ip);
+
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
+  };
+
+
+  useEffect(() => {
+    fetch_data(); 
+    fetch_masterlist();
+  }, []);
+
+  const filteredData = evacuees.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
 
   return (
     <>
@@ -91,22 +162,9 @@ const INEvacuaees = () => {
                       type="text"
                       placeholder="Search..."
                       className="w-full pl-4 pr-10 py-2 border rounded-md"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <button className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <svg
-                        className="w-6 h-6 text-black"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                        />
-                      </svg>
-                    </button>
                   </div>
                   <button
                     onClick={handleExportExcel}
@@ -149,15 +207,18 @@ const INEvacuaees = () => {
                           Evacuation Center
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date/Time IN
+                          Date
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Action
+                         Time IN
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Time Out
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {evacuees.map((evacuee) => (
+                      {filteredData.map((evacuee) => (
                         <tr key={evacuee.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {evacuee.id}
@@ -169,15 +230,16 @@ const INEvacuaees = () => {
                             {evacuee.sex}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.evacuationCenter}
+                            {evacuee.evacuation_center}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {`${evacuee.submittedDate} ${evacuee.submittedTime}`}
+                            {evacuee.date}
                           </td>
-                          <td>
-                            <button className="btn btn-sm bg-txt hover:bg-txt text-white">
-                              Out
-                            </button>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {evacuee.time_in}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {evacuee.time_out}
                           </td>
                         </tr>
                       ))}

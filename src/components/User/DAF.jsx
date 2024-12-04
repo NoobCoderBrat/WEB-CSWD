@@ -6,17 +6,56 @@ import { BsQrCode } from "react-icons/bs";
 import { FaFileDownload } from "react-icons/fa";
 import { IoArrowBackCircle } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import supabase from "../supabaseClient";
 
 const DAF = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
 
+  const [surname, setSurname] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [middlename, setMiddlename] = useState("");
+  const [age, setAge] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [income, setIncome] = useState("");
+  const [dob, setDob] = useState("");
+  const [sex, setSex] = useState("");
+  const [disability, setDisability] = useState("");
+  const [status, setStatus] = useState("");
+  const [housing, setHousing] = useState("");
+
   const handleSubmit = () => {
     setModalOpen(true);
   };
 
-  const handleFormSubmit = () => {
-    setSubmitModalOpen(true);
+  const handleFormSubmit = async () => {
+      const { data, error } = await supabase
+      .from("DAF")
+      .insert([
+      {
+        surname,
+        firstname,
+        middlename,
+        age,
+        occupation,
+        income,
+        dob,
+        sex,
+        disability,
+        status,
+        housing
+      },
+    ])
+    .select();
+    if (error) {
+      console.error("Error inserting data:", error);
+      alert("Error inserting data");
+    } else {
+      setSubmitModalOpen(true);
+      const id = data[0].id;
+      sessionStorage.setItem('id', id);
+     
+    }
   };
 
   const handleCloseModal = () => {
@@ -36,7 +75,7 @@ const DAF = () => {
             <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
               <div className="flex justify-start">
                 <h2 className="text-2xl font-semibold mb-6 italic flex gap-5">
-                  <NavLink to="/forms">
+                  <NavLink to="/">
                     <button className="mt-1">
                       <IoArrowBackCircle />
                     </button>
@@ -62,6 +101,8 @@ const DAF = () => {
                       id="surname"
                       className="input input-bordered w-full"
                       placeholder="Apelyido"
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
                     />
                   </div>
                   <div>
@@ -76,6 +117,8 @@ const DAF = () => {
                       id="firstname"
                       className="input input-bordered w-full"
                       placeholder="Pangalan"
+                      value={firstname}
+                      onChange={(e) => setFirstname(e.target.value)}
                     />
                   </div>
                   <div>
@@ -90,6 +133,8 @@ const DAF = () => {
                       id="middlename"
                       className="input input-bordered w-full"
                       placeholder="Middle initial"
+                      value={middlename}
+                      onChange={(e) => setMiddlename(e.target.value)}
                     />
                   </div>
                 </div>
@@ -106,6 +151,8 @@ const DAF = () => {
                       id="age"
                       className="input input-bordered w-full"
                       placeholder="Edad"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
                     />
                   </div>
                   <div>
@@ -120,6 +167,8 @@ const DAF = () => {
                       id="occupation"
                       className="input input-bordered w-full"
                       placeholder="Trabaho"
+                      value={occupation}
+                      onChange={(e) => setOccupation(e.target.value)}
                     />
                   </div>
                   <div>
@@ -134,6 +183,8 @@ const DAF = () => {
                       id="income"
                       className="input input-bordered w-full"
                       placeholder="Bulanang kinatibuk-ang kita"
+                      value={income}
+                      onChange={(e) => setIncome(e.target.value)}
                     />
                   </div>
                 </div>
@@ -149,19 +200,9 @@ const DAF = () => {
                       type="date"
                       id="dob"
                       className="input input-bordered w-full"
+                      value={dob}
+                      onChange={(e) => setDob(e.target.value)}
                     />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor=""
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Sex
-                    </label>
-                    <select className="select select-bordered w-full max-w-xs">
-                      <option>Male</option>
-                      <option>Female</option>
-                    </select>
                   </div>
                   <div>
                     <label
@@ -170,12 +211,14 @@ const DAF = () => {
                     >
                       Sex
                     </label>
-                    <input
-                      type="text"
-                      id="sex"
-                      className="input input-bordered w-full"
-                      placeholder="ex: MALE"
-                    />
+                    <select
+                      className="select select-bordered w-full max-w-xs"
+                      value={sex}
+                      onChange={(e) => setSex(e.target.value)}
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                    </select>
                   </div>
                   <div>
                     <label
@@ -189,6 +232,8 @@ const DAF = () => {
                       id="disability"
                       className="input input-bordered w-full"
                       placeholder="What type of disability"
+                      value={disability}
+                      onChange={(e) => setDisability(e.target.value)}
                     />
                   </div>
                 </div>
@@ -200,6 +245,8 @@ const DAF = () => {
                         className="form-radio text-blue-600"
                         name="status"
                         value="single"
+                        checked={status === "single"}
+                        onChange={(e) => setStatus(e.target.value)}
                       />
                       <span className="ml-2">Single Mom</span>
                     </label>
@@ -209,6 +256,8 @@ const DAF = () => {
                         className="form-radio text-blue-600"
                         name="status"
                         value="4ps"
+                        checked={status === "4ps"}
+                        onChange={(e) => setStatus(e.target.value)}
                       />
                       <span className="ml-2">4p's Beneficiary</span>
                     </label>
@@ -218,6 +267,8 @@ const DAF = () => {
                         className="form-radio text-blue-600"
                         name="status"
                         value="ip"
+                        checked={status === "ip"}
+                        onChange={(e) => setStatus(e.target.value)}
                       />
                       <span className="ml-2">
                         IP - Type of Ethnicity (Indigenous People)
@@ -226,12 +277,6 @@ const DAF = () => {
                   </div>
                 </div>
                 <hr />
-                <div className="flex items-center mt-5">
-                  <p className="text-sm italic">
-                    *if you live alone, you can directly submit afterwards
-                  </p>
-                </div>
-
                 <div className="space-y-4 mt-5 mb-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label className="inline-flex items-center">
@@ -240,6 +285,8 @@ const DAF = () => {
                         className="form-radio text-blue-600"
                         name="housing"
                         value="owner"
+                        checked={housing === "owner"}
+                        onChange={(e) => setHousing(e.target.value)}
                       />
                       <span className="ml-2">House & lot owner</span>
                     </label>
@@ -249,6 +296,8 @@ const DAF = () => {
                         className="form-radio text-blue-600"
                         name="housing"
                         value="renter"
+                        checked={housing === "renter"}
+                        onChange={(e) => setHousing(e.target.value)}
                       />
                       <span className="ml-2">House/room & lot renter</span>
                     </label>
@@ -257,42 +306,16 @@ const DAF = () => {
                         type="radio"
                         className="form-radio text-blue-600"
                         name="housing"
-                        value="both"
+                        value="informal"
+                        checked={housing === "informal"}
+                        onChange={(e) => setHousing(e.target.value)}
                       />
-                      <span className="ml-2">House owner & lot renter</span>
-                    </label>
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        className="form-radio text-blue-600"
-                        name="housing"
-                        value="consent"
-                      />
-                      <span className="ml-2">
-                        House owner, rent-free lot with owner's consent
-                      </span>
-                    </label>
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        className="form-radio text-blue-600"
-                        name="housing"
-                        value="noconsent"
-                      />
-                      <span className="ml-2">
-                        House owner, rent-free lot w/o owner's consent
-                      </span>
+                      <span className="ml-2">Informal settler</span>
                     </label>
                   </div>
                 </div>
                 <hr />
                 <div className="flex justify-center mt-10 gap-3">
-                  <button
-                    className="w-1/4 px-4 py-2 btn text-blue-500 border-blue-500 hover:text-white font-bold hover:bg-bttn"
-                    onClick={handleSubmit}
-                  >
-                    Generate QR Code
-                  </button>
                   <button
                     className="w-1/4 px-4 py-2 bg-success text-white btn font-bold hover:bg-success"
                     onClick={handleFormSubmit}

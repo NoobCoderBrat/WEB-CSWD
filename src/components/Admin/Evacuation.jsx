@@ -1,34 +1,30 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import supabase from "../supabaseClient";
 
 const Evacuation = () => {
   const [activeView, setActiveView] = useState("cards");
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createFormData, setCreateFormData] = useState({
-    name: "",
-    location: "",
-    capacity: "",
-    photo: null,
-  });
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [capacity, setCapacity] = useState("");
+  const [image, setImage] = useState("");
+  const [status, setStatus] = useState("");
+  const [file, setFile] = useState("");
+  const [evacuationCenters, setEvacuationCenters] = useState([]);
 
-  const evacuationCenters = [
-    {
-      id: 1,
-      name: "Agusan National High School",
-      address: "A.D. Curato Street, Butuan City",
-      image: "https://placehold.co/600x400",
-      status: "available to evacuate",
-    },
-    {
-      id: 2,
-      name: "Butuan Central Elementary School",
-      address: "A.D. Curato Street, Butuan City",
-      image: "https://placehold.co/600x400",
-      status: "unavailable to evacuate",
-    },
-  ];
+  const fetch_data = async () => {
+    try {
+      const { error, data } = await supabase.from("EvacuationCenter").select("*");
+      if (error) throw error;
+      setEvacuationCenters(data);
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
+  };
 
   const evacuees = [
     {
@@ -87,29 +83,58 @@ const Evacuation = () => {
     setIsModalOpen(false);
   };
 
-  const handleCreateSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    setShowCreateModal(false);
-    setCreateFormData({ name: "", location: "", capacity: "", photo: null });
+
+  const handlePhotoUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      try {
+        const filePath = `${selectedFile.name}`;
+        const { data, error } = await supabase.storage
+          .from("Images")
+          .upload(filePath, selectedFile);
+        if (error) {
+          throw error;
+        }
+        const { data: publicURL, error: urlError } = supabase.storage
+          .from("Images")
+          .getPublicUrl(filePath);
+        if (urlError) {
+          throw urlError;
+        }
+        console.log("Image URL:", publicURL.publicUrl);
+        setImage(publicURL.publicUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Error uploading image: " + error.message);
+      }
+    }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCreateFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleSubmit = async () => {
+    const { data, error } = await supabase.from("EvacuationCenter").insert([
+      {
+       name,
+       location,
+       capacity,
+       image,
+       status : 'Open'
+      },
+    ]);
+    if (error) {
+      console.error("Error inserting data:", error);
+      alert("Error inserting data");
+    } else {
+      console.log("Data inserted successfully:", data);
+      window.location.reload();
+    }
   };
+  
 
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    setCreateFormData((prev) => ({
-      ...prev,
-      photo: file,
-    }));
-  };
 
+  useEffect(() => {
+    fetch_data();
+  }, []);
   return (
     <div className="min-h-screen bg-gray-100 font-mono xl:flex">
       <AdminSidebar />
@@ -128,9 +153,6 @@ const Evacuation = () => {
                     onClick={() => setShowCreateModal(true)}
                   >
                     Create Evacuation Center
-                  </button>
-                  <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
-                    Delete
                   </button>
                 </div>
               </div>
@@ -189,7 +211,7 @@ const Evacuation = () => {
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          {center.address}
+                          {center.location}
                         </div>
                         <div
                           className={`flex items-center ${
@@ -353,7 +375,7 @@ const Evacuation = () => {
               </button>
             </div>
 
-            <form onSubmit={handleCreateSubmit} className="space-y-4">
+            <div className="space-y-4">
               {/* Evacuation Center Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -362,8 +384,7 @@ const Evacuation = () => {
                 <input
                   type="text"
                   name="name"
-                  value={createFormData.name}
-                  onChange={handleInputChange}
+                  onChange={(e) => setName(e.target.value)}
                   className="input input-bordered w-full"
                   placeholder="Butuan Central Elementary School"
                 />
@@ -378,8 +399,7 @@ const Evacuation = () => {
                   <input
                     type="text"
                     name="location"
-                    value={createFormData.location}
-                    onChange={handleInputChange}
+                    onChange={(e) => setLocation(e.target.value)}
                     className="input input-bordered w-full"
                     placeholder="A.D Curato Street, Butuan City"
                   />
@@ -393,8 +413,7 @@ const Evacuation = () => {
                   <input
                     type="number"
                     name="capacity"
-                    value={createFormData.capacity}
-                    onChange={handleInputChange}
+                    onChange={(e) => setCapacity(e.target.value)}
                     className="input input-bordered w-full"
                     placeholder="1,200"
                   />
@@ -410,7 +429,7 @@ const Evacuation = () => {
                   <input
                     type="text"
                     value={
-                      createFormData.photo ? createFormData.photo.name : ""
+                      image
                     }
                     readOnly
                     className="input input-bordered w-full"
@@ -432,13 +451,13 @@ const Evacuation = () => {
               {/* Submit Button */}
               <div className="mt-6">
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   className="btn bg-bttn text-white font-bold w-full hover:bg-bttn"
                 >
                   Create Evacuation Center
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

@@ -30,9 +30,9 @@ import LandlordList from "./components/Admin/LandlordList";
 const Routing = () => {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/forms" element={<Forms />} />
+      <Route path="/" element={<Forms />} />
       <Route path="/daf" element={<DAF />} />
       <Route path="/familymembers" element={<FamilyMembers />} />
       <Route path="/landlord" element={<Landlord />} />
@@ -41,6 +41,9 @@ const Routing = () => {
       <Route path="/evacuationcenter" element={<EvacuationCenter />} />
       <Route path="/evacuationnotice" element={<EvacuationNotice />} />
       <Route path="/faqs" element={<FAQs />} />
+
+
+      
       <Route path="/admindashboard" element={<AdminDashboard />} />
       <Route path="/adminevacuation" element={<Evacuation />} />
       <Route path="/adminforms" element={<AdminForms />} />

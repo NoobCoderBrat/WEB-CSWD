@@ -83,12 +83,12 @@ const AdminSidebar = () => {
                   >
                     IN Evacuees
                   </NavLink>
-                  <NavLink
+                  {/* <NavLink
                     to="/out-evacuaees"
                     className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
                   >
                     OUT Evacuees
-                  </NavLink>
+                  </NavLink> */}
                   <NavLink
                     to="/list-of-landlords"
                     className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
@@ -183,12 +183,12 @@ const AdminSidebar = () => {
                 >
                   IN Evacuees
                 </NavLink>
-                <NavLink
+                {/* <NavLink
                   to="/out-evacuaees"
                   className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"
                 >
                   OUT Evacuees
-                </NavLink>
+                </NavLink> */}
                 <NavLink
                   to="/list-of-landlords"
                   className="text-sm text-txt hover:bg-gray-200 p-2 rounded-md block"

@@ -5,9 +5,11 @@ import { IoArrowBackCircle } from "react-icons/io5";
 import { LuSend } from "react-icons/lu";
 import { IoMdPersonAdd } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import supabase from "../supabaseClient";
 
 const FamilyMembers = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const head_id = sessionStorage.getItem("id");
   const [familyMembers, setFamilyMembers] = useState([
     {
       id: 1,
@@ -58,20 +60,42 @@ const FamilyMembers = () => {
     );
   };
 
-  // Handle form submission
+
   const handleSubmit = async () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true); 
     try {
-      // Simulate an API call
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Replace with real API call
-      console.log("Submitted Family Members Data:", familyMembers);
-      // Reset form or provide success feedback here
+      const familyData = familyMembers.map((member) => ({
+        ...member,
+        head_id, 
+      }));
+      const { data, error } = await supabase
+        .from("FamilyMembers")
+        .insert(familyData);
+      if (error) {
+        throw new Error(error.message);
+      }
+      console.log("Successfully inserted Family Members:", data);
+      setFamilyMembers([
+        {
+          id: 1,
+          fullname: "",
+          relation: "",
+          dob: "",
+          age: "",
+          sex: "",
+          education: "",
+          occupation: "",
+          health: "",
+          remarks: "",
+        },
+      ]); 
     } catch (error) {
       console.error("Submission failed:", error);
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false); 
     }
   };
+  
 
   return (
     <div className="h-screen bg-gray-100 font-mono lg:flex">

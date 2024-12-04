@@ -1,38 +1,79 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import supabase from "../supabaseClient";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      alert("Please fill in all fields before logging in.");
-      return;
+  const superadmin = async () => {
+    const { data } = await supabase
+    .from('SuperAdmin')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+    if (data && data.password === password && data.email === email) {
+      const id = data.id;
+      sessionStorage.setItem('id', id);
+      navigate("/sadashboard")
     }
-    setIsLoading(true);
-    setTimeout(() => {
+    
+    else {
+      alert('Wrong Credentials');
       setIsLoading(false);
-      openModal();
-    }, 2000);
+    }
+  }
+
+  const admin = async () => {
+    const { data } = await supabase
+    .from('Admin')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+    if (data && data.password === password && data.email === email) {
+      const id = data.id;
+      sessionStorage.setItem('id', id);
+      navigate("/admindashboard")
+    }
+    
+    else {
+      alert('Wrong Credentials');
+      setIsLoading(false);
+    }
+  }
+
+  const check = () => {
+    if (email === 'superadmin@gmail.com'){
+      superadmin();
+    }
+    else{
+      admin();
+    }
   };
+
+
 
   return (
     <>
       <div className="flex justify-center content-center font-mono p-10 bg-base-200 min-h-screen">
         <div className="w-1/3 p-10 rounded-lg text-black shadow-2xl border bg-white">
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-20">
             <img
               src="logo.png"
               alt="gabay-image-logo"
-              className="h-24 w-26 mt-1"
+              className="h-24 w-26"
             />
           </div>
           <h1 className="mb-8 text-5x sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-wide mt-3 text-center">
             Gabay
           </h1>
-          <form onSubmit={handleSubmit} className="mt-6">
+          <div className="mt-6">
             <div className="mb-2">
               <label className="input input-bordered flex items-center gap-2">
                 <svg
@@ -47,8 +88,10 @@ const Login = () => {
                 <input
                   type="text"
                   className="grow"
-                  placeholder="Example@gmail.com"
+                  placeholder="example@gmail.com"
                   required
+                  onChange={(e) => setEmail(e.target.value)}
+                  
                 />
               </label>
             </div>
@@ -71,6 +114,7 @@ const Login = () => {
                   placeholder="Enter a password"
                   className="grow"
                   required
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
             </div>
@@ -86,7 +130,7 @@ const Login = () => {
             </div>
             <div className="flex items-center gap-2">
               <button
-                type="submit"
+                onClick={check}
                 className="w-full btn bg-bttn hover:bg-dark text-white font-bold"
                 disabled={isLoading}
               >
@@ -100,19 +144,11 @@ const Login = () => {
                 )}
               </button>
             </div>
-          </form>
-          <div className="divider before:bg-gray-400 after:bg-gray-400 text-gray-700">
-            or
           </div>
-          <NavLink to="/register">
-            <button className="w-full py-3 font-bold btn rounded-lg border-bttn">
-              Create an Account
-            </button>
-          </NavLink>
         </div>
       </div>
 
-      {/* toast */}
+      {/* toast
       <div className="toast toast-top toast-end font-mono">
         <div className="alert alert-success">
           <svg
@@ -146,7 +182,7 @@ const Login = () => {
           </svg>
           <span className="text-white">Login failed.</span>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

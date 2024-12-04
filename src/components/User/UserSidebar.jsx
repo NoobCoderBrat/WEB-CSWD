@@ -37,7 +37,7 @@ const UserSidebar = () => {
         <div className="lg:hidden bg-white shadow-md">
           <ul className="menu p-4 space-y-3">
             <NavLink
-              to="/forms"
+              to="/"
               className={({ isActive }) =>
                 isActive
                   ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
@@ -120,7 +120,7 @@ const UserSidebar = () => {
         </div>
         <ul className="menu menu-vertical flex-grow p-6 space-y-4 mt-3 font-bold">
           <NavLink
-            to="/forms"
+            to="/"
             className={({ isActive }) =>
               isActive
                 ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
@@ -171,14 +171,14 @@ const UserSidebar = () => {
           </NavLink>
           <hr />
           <NavLink
-            to="/"
+            to="/login"
             className={({ isActive }) =>
               isActive
-                ? "text-lg flex items-center gap-2 active:opacity-20 bg-gray-200 text-error p-1"
-                : "text-lg flex items-center gap-2 active:opacity-20 text-error p-1"
+                ? "text-lg flex items-center gap-2 active:opacity-20  text-success p-1"
+                : "text-lg flex items-center gap-2 active:opacity-20 text-success p-1"
             }
           >
-            <FaSignOutAlt /> Logout
+            <FaSignOutAlt /> Login
           </NavLink>
         </ul>
         {/* Footer */}

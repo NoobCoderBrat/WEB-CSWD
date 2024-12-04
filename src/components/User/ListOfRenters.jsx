@@ -5,9 +5,10 @@ import { NavLink } from "react-router-dom";
 import { IoMdPersonAdd } from "react-icons/io";
 import { LuSend } from "react-icons/lu";
 import { IoMdClose } from "react-icons/io";
+import supabase from "../supabaseClient";
 
 const ListOfRenters = () => {
-  // State to manage the renters list with form data
+  const landlord_id = sessionStorage.getItem("id");
   const [renters, setRenters] = useState([
     { id: 1, fullname: "", sex: "", rentalType: "" },
   ]);
@@ -37,18 +38,33 @@ const ListOfRenters = () => {
     );
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
-    setIsLoading(true); // Start loading animation
+    setIsLoading(true); 
     try {
-      // Simulate an API call
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Replace with actual API call
-      console.log("Submitted Renters Data:", renters);
-      // You can handle success or reset the form here
+ 
+      const rentersData = renters.map((renter) => ({
+        fullname: renter.fullname,
+        sex: renter.sex,
+        rental_type: renter.rentalType,
+        landlord_id: landlord_id, 
+      }));
+  
+
+      const { data, error } = await supabase.from("Renters").insert(rentersData);
+  
+      if (error) {
+        throw new Error(error.message);
+      }
+  
+      console.log("Renters Data Submitted:", data);
+  
+
+      setRenters([{ id: 1, fullname: "", sex: "", rentalType: "" }]);
+  
     } catch (error) {
       console.error("Submission failed:", error);
     } finally {
-      setIsLoading(false); // End loading animation
+      setIsLoading(false); 
     }
   };
 
@@ -127,6 +143,7 @@ const ListOfRenters = () => {
                       }
                       className="select select-bordered w-full max-w-xs"
                     >
+                      <option>Select</option>
                       <option>Male</option>
                       <option>Female</option>
                     </select>
@@ -150,6 +167,7 @@ const ListOfRenters = () => {
                       }
                       className="select select-bordered w-full max-w-xs"
                     >
+                       <option>Select</option>
                       <option>House</option>
                       <option>Pad</option>
                       <option>Room</option>

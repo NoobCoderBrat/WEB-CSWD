@@ -1,47 +1,115 @@
 import SASidebar from "./SASidebar";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import supabase from "../supabaseClient";
+import * as XLSX from "xlsx";
 const SADAF = () => {
-  const [selectedCenter, setSelectedCenter] = useState("Butuan Central");
   const [selectedBarangay, setSelectedBarangay] = useState("Brgy. Buhangin");
   const [selectedDate, setSelectedDate] = useState("2024-06-05");
+  const [evacuees, setEvacuees] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [senior, setSenior] = useState("");
+  const [pwd, setPWD] = useState("");
+  const [student, setStudent] = useState("");
+  const [ps, set4ps] = useState("");
+  const [ip, setIp] = useState("");
+  
+   
 
   const stats = [
     {
       icon: "👴",
       label: "Senior Citizen",
-      count: 26,
+      count: senior,
       textColor: "text-blue-600",
     },
-    { icon: "♿", label: "PWD", count: 15, textColor: "text-red-600" },
-    { icon: "👨‍🎓", label: "Students", count: 15, textColor: "text-blue-600" },
-    { icon: "👥", label: "4Ps Member", count: 48, textColor: "text-blue-600" },
+    { icon: "♿", label: "PWD", count: pwd, textColor: "text-red-600" },
+    { icon: "👨‍🎓", label: "Students", count: student, textColor: "text-blue-600" },
+    { icon: "👥", label: "4Ps Member", count: ps, textColor: "text-blue-600" },
     {
       icon: "👤",
       label: "Indigenous People",
-      count: 3,
+      count: ip,
       textColor: "text-blue-600",
     },
-    { icon: "🤰", label: "Pregnant", count: 8, textColor: "text-blue-600" },
   ];
 
-  const evacuees = [
-    {
-      id: 1,
-      name: "Pepito Manaloto",
-      age: 53,
-      sex: "Male",
-      address: "Brgy. Buhangin",
-      evacuationCenter: "Butuan Central Elementary School",
-      submittedDate: "June 5, 2024",
-      submittedTime: "9:45AM",
-    },
-  ];
+
 
   const handleExportExcel = () => {
-    // Handle Excel export logic here
-    console.log("Exporting to Excel...");
+    if (evacuees.length === 0) {
+      alert("No data available to export.");
+      return;
+    }
+  
+    // Prepare the data for Excel
+    const worksheetData = evacuees.map((evacuee) => ({
+      No: evacuee.id,
+      Name: evacuee.name,
+      Sex: evacuee.sex,
+      "Evacuation Center": evacuee.evacuation_center,
+      Date: evacuee.date,
+      "Time IN": evacuee.time_in,
+      "Time OUT": evacuee.time_out,
+    }));
+  
+    // Create a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+  
+    // Create a workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Evacuees");
+  
+    // Export to Excel
+    XLSX.writeFile(workbook, "Evacuees.xlsx");
   };
+
+  const fetch_data = async () => {
+    try {
+      const { error, data } = await supabase.from("Evacuees").select("*");
+      if (error) throw error;
+      setEvacuees(data); 
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
+  };
+
+  const fetch_masterlist = async () => {
+    try {
+      const { error, data } = await supabase.from("DAF").select("*");
+      if (error) throw error;
+
+      const elder = data.filter(item => {
+        const age = parseInt(item.age);
+        return age >= 60;
+      }).length;
+      setSenior(elder);
+
+      const pwd = data.filter(item => {return item.disability !== 'N/A' ;}).length;
+      setPWD(pwd);
+      const student = data.filter(item => {return item.occupation == 'Student' ;}).length;
+      setStudent(student);
+      const ps = data.filter(item => {return item.status == '4ps' ;}).length;
+      set4ps(ps);
+      const ip = data.filter(item => {return item.status == 'ip' ;}).length;
+      setIp(ip);
+
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
+  };
+
+
+  useEffect(() => {
+    fetch_data(); 
+    fetch_masterlist();
+  }, []);
+
+  const filteredData = evacuees.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
 
   return (
     <>
@@ -72,15 +140,6 @@ const SADAF = () => {
                 {/* Filters */}
                 <div className="flex flex-wrap gap-4 mb-6 justify-end">
                   <select
-                    value={selectedCenter}
-                    onChange={(e) => setSelectedCenter(e.target.value)}
-                    className="border rounded-md px-3 py-2"
-                  >
-                    <option>Butuan Central</option>
-                    <option>Other Centers...</option>
-                  </select>
-
-                  <select
                     value={selectedBarangay}
                     onChange={(e) => setSelectedBarangay(e.target.value)}
                     className="border rounded-md px-3 py-2"
@@ -97,25 +156,36 @@ const SADAF = () => {
                   />
                 </div>
                 {/* Export Button */}
-                <button
-                  onClick={handleExportExcel}
-                  className="btn btn-success text-white font-bold"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                <div className="flex gap-3">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="w-full pl-4 pr-10 py-2 border rounded-md"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                  </svg>
-                  <span>EXPORT AS EXCEL</span>
-                </button>
+                  </div>
+                  <button
+                    onClick={handleExportExcel}
+                    className="btn btn-success text-white font-bold"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    <span>EXPORT AS EXCEL</span>
+                  </button>
+                </div>
               </div>
 
               {/* Table */}
@@ -131,24 +201,24 @@ const SADAF = () => {
                           Name
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Age
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Sex
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Address
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Evacuation Center
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Submitted Date and Time
+                          Date
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                         Time IN
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Time Out
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {evacuees.map((evacuee) => (
+                      {filteredData.map((evacuee) => (
                         <tr key={evacuee.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {evacuee.id}
@@ -157,19 +227,19 @@ const SADAF = () => {
                             {evacuee.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.age}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {evacuee.sex}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.address}
+                            {evacuee.evacuation_center}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.evacuationCenter}
+                            {evacuee.date}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {`${evacuee.submittedDate} ${evacuee.submittedTime}`}
+                            {evacuee.time_in}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {evacuee.time_out}
                           </td>
                         </tr>
                       ))}

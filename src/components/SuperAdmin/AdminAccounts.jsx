@@ -1,56 +1,57 @@
 import SASidebar from "./SASidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import supabase from "../supabaseClient";
 
 const AdminAccounts = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [formData, setFormData] = useState({
-    fullname: "",
-    email: "",
-    phone: "",
-    barangay: "",
-    barangayPosition: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [fullname, setFullname] = useState("");
+  const [position, setPosition] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [barangay, setBarangay] = useState("");
+  const [users, setUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
-  const evacuees = [
-    {
-      id: 1,
-      name: "Marc Gerasmio",
-      age: 21,
-      sex: "Male",
-      address: "Brgy. Buhangin",
-      position: "Cat Style",
-      submittedDate: "June 5, 2024",
-      submittedTime: "9:45AM",
-    },
-  ];
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const fetch_data = async () => {
+    try {
+      const { error, data } = await supabase.from("Admin").select("*");
+      if (error) throw error;
+      setUsers(data);
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
-    setShowCreateModal(false);
-    setFormData({
-      fullname: "",
-      email: "",
-      phone: "",
-      barangay: "",
-      barangayPosition: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-    });
+  const handleSubmit = async () => {
+    const { data, error } = await supabase.from("Admin").insert([
+      {
+        fullname,
+        position,
+        email,
+        number,
+        password,
+        barangay,
+      },
+    ]);
+    if (error) {
+      console.error("Error inserting data:", error);
+      alert("Error inserting data");
+    } else {
+      console.log("Data inserted successfully:", data);
+      window.location.reload();
+    }
   };
+
+  useEffect(() => {
+    fetch_data();
+  }, []);
+
+  // Filtered users based on search query
+  const filteredUsers = users.filter((user) =>
+    user.fullname.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -64,6 +65,8 @@ const AdminAccounts = () => {
                   type="text"
                   placeholder="Search..."
                   className="w-full pl-4 pr-10 py-2 border rounded-md"
+                  value={searchQuery} // Bind input to searchQuery state
+                  onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on change
                 />
               </div>
               <button
@@ -86,19 +89,16 @@ const AdminAccounts = () => {
                         Name
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Age
+                        Number
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Sex
+                        Email
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Baranggay
+                        Barangay
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Baranggay Position
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date Created
+                        Barangay Position
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Action
@@ -106,28 +106,25 @@ const AdminAccounts = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {evacuees.map((evacuee) => (
-                      <tr key={evacuee.id}>
+                    {filteredUsers.map((user, index) => (
+                      <tr key={user.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {evacuee.id}
+                          {index + 1}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {evacuee.name}
+                          {user.fullname}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {evacuee.age}
+                          {user.number}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {evacuee.sex}
+                          {user.email}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {evacuee.address}
+                          {user.barangay}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {evacuee.position}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {`${evacuee.submittedDate} ${evacuee.submittedTime}`}
+                          {user.position}
                         </td>
                         <td>
                           <button className="btn btn-sm btn-error text-white font-bold">
@@ -157,15 +154,14 @@ const AdminAccounts = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm mb-1">Fullname</label>
                     <input
                       type="text"
                       name="fullname"
-                      value={formData.fullname}
-                      onChange={handleInputChange}
+                      onChange={(e) => setFullname(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     />
                   </div>
@@ -176,54 +172,7 @@ const AdminAccounts = () => {
                     <input
                       type="text"
                       name="barangayPosition"
-                      value={formData.barangayPosition}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm mb-1">email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm mb-1">Username</label>
-                    <input
-                      type="text"
-                      name="username"
-                      value={formData.username}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm mb-1">Phone</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm mb-1">Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
+                      onChange={(e) => setPosition(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     />
                   </div>
@@ -235,33 +184,54 @@ const AdminAccounts = () => {
                     <input
                       type="text"
                       name="barangay"
-                      value={formData.barangay}
-                      onChange={handleInputChange}
+                      onChange={(e) => setBarangay(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm mb-1">
-                      Confirm password
-                    </label>
+                    <label className="block text-sm mb-1">Phone</label>
                     <input
-                      type="password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
+                      type="tel"
+                      name="phone"
+                      onChange={(e) => setNumber(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     />
                   </div>
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm mb-1">email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                
+                  <div>
+                    <label className="block text-sm mb-1">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                </div>
                 <hr />
 
                 <button
-                  type="submit"
+                onClick={handleSubmit}
                   className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mt-6"
                 >
                   Create Account
                 </button>
-              </form>
+              </div>
             </div>
           </div>
         )}

@@ -6,17 +6,46 @@ import { NavLink } from "react-router-dom";
 import { LuSend } from "react-icons/lu";
 import { FaFileDownload } from "react-icons/fa";
 import { IoMdPersonAdd } from "react-icons/io";
+import supabase from "../supabaseClient";
 
 const Landlord = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
 
-  const handleSubmit = () => {
-    setModalOpen(true);
+  const [fullName, setFullName] = useState("");
+  const [barangay, setBarangay] = useState("");
+  const [age, setAge] = useState("");
+  const [sex, setSex] = useState("Male");
+
+  const handleSubmit = async () => {
+    try {
+      // Insert data into the LandLord table
+      const { data, error } = await supabase
+        .from('LandLord')
+        .insert([
+          {
+            fullName,
+            barangay,
+            age: age,
+            sex: sex,
+          }
+        ])
+        .select();
+
+      if (error) {
+        throw error;
+      }
+
+      const id = data[0].id;
+      sessionStorage.setItem('id', id);
+      setSubmitModalOpen(true);
+    } catch (error) {
+      console.error('Error submitting data:', error.message);
+    }
   };
 
   const handleFormSubmit = () => {
-    setSubmitModalOpen(true);
+    
   };
 
   const handleCloseModal = () => {
@@ -52,28 +81,32 @@ const Landlord = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
                   <div>
                     <label
-                      htmlFor="surname"
+                      htmlFor="fullName"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
                       Full Name
                     </label>
                     <input
                       type="text"
-                      id="surname"
+                      id="fullName"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                       className="input input-bordered w-full"
                       placeholder="John Doe"
                     />
                   </div>
                   <div>
                     <label
-                      htmlFor="surname"
+                      htmlFor="barangay"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Baranggay
+                      Barangay
                     </label>
                     <input
                       type="text"
-                      id="surname"
+                      id="barangay"
+                      value={barangay}
+                      onChange={(e) => setBarangay(e.target.value)}
                       className="input input-bordered w-full"
                       placeholder="ex. Brgy. Lumbocan"
                     />
@@ -82,14 +115,16 @@ const Landlord = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
                   <div>
                     <label
-                      htmlFor="surname"
+                      htmlFor="age"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
                       Age
                     </label>
                     <input
                       type="number"
-                      id="surname"
+                      id="age"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
                       className="input input-bordered w-full"
                       placeholder="edad"
                     />
@@ -98,24 +133,14 @@ const Landlord = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Sex
                     </label>
-                    <select className="select select-bordered w-full">
+                    <select
+                      value={sex}
+                      onChange={(e) => setSex(e.target.value)}
+                      className="select select-bordered w-full"
+                    >
                       <option>Male</option>
                       <option>Female</option>
                     </select>
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="surname"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      /*Unknown*/
-                    </label>
-                    <input
-                      type="text"
-                      id="surname"
-                      className="input input-bordered w-full"
-                      placeholder="naa sa proto pero walay label awts gege"
-                    />
                   </div>
                 </div>
                 <br />
@@ -123,14 +148,8 @@ const Landlord = () => {
 
                 <div className="flex justify-end mt-10 gap-3">
                   <button
-                    className="w-1/4 px-4 py-2 btn text-blue-500 border-blue-500 hover:text-white font-bold hover:bg-bttn"
-                    onClick={handleSubmit}
-                  >
-                    Generate QR Code
-                  </button>
-                  <button
                     className="w-1/4 px-4 py-2 bg-success text-white btn font-bold hover:bg-success"
-                    onClick={handleFormSubmit}
+                    onClick={handleSubmit}
                   >
                     <LuSend />
                     Submit
