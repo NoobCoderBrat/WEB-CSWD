@@ -11,6 +11,8 @@ const LandlordList = () => {
     age: "",
     sex: "",
   });
+  const [viewingRenters, setViewingRenters] = useState(null); // For storing renters data
+  const [landlordIdForRenters, setLandlordIdForRenters] = useState(null); // To store selected landlord's ID for fetching renters data
 
   // Fetch data from the LandLord table
   const fetch_data = async () => {
@@ -20,6 +22,21 @@ const LandlordList = () => {
       setData(data);
     } catch (error) {
       alert("An unexpected error occurred while fetching data.");
+      console.error("Error:", error.message);
+    }
+  };
+
+  // Fetch renters data based on landlord's ID
+  const fetchRenters = async (landlordId) => {
+    try {
+      const { data, error } = await supabase
+        .from("Renters")
+        .select("*")
+        .eq("landlord_id", landlordId); // Assuming Renters has a landlord_id column
+      if (error) throw error;
+      setViewingRenters(data);
+    } catch (error) {
+      alert("An unexpected error occurred while fetching renters data.");
       console.error("Error:", error.message);
     }
   };
@@ -74,6 +91,12 @@ const LandlordList = () => {
     }
   };
 
+  // View renters of a specific landlord
+  const handleViewRenters = (landlordId) => {
+    setLandlordIdForRenters(landlordId); // Set the selected landlord ID
+    fetchRenters(landlordId); // Fetch the renters for that landlord
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 font-mono xl:flex">
       <AdminSidebar />
@@ -81,14 +104,10 @@ const LandlordList = () => {
         <main className="flex-1 p-4 sm:p-6 overflow-auto">
           <div className="bg-gray-100 min-h-screen p-4">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="flex justify-end p-4 border-b gap-3">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-full pl-4 pr-10 py-2 border rounded-md"
-                  />
-                </div>
+              <div className="flex justify-between items-center mb-6 mt-5 p-4">
+                <h1 className="text-xl font-semibold text-gray-800">
+                  | List of Landlords
+                </h1>
               </div>
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -135,6 +154,12 @@ const LandlordList = () => {
                           >
                             Delete
                           </button>
+                          <button
+                            className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white"
+                            onClick={() => handleViewRenters(item.id)}
+                          >
+                            View Renters
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -175,6 +200,43 @@ const LandlordList = () => {
                         </button>
                       </div>
                     </form>
+                  </div>
+                </div>
+              )}
+
+              {/* View Renters Modal */}
+              {viewingRenters && (
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+                  <div className="bg-white p-6 rounded-md shadow-lg w-96">
+                    <h3 className="text-lg font-semibold">Renters List</h3>
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Renter Name
+                          </th>
+                          <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Renter Gender
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {viewingRenters.map((renter, index) => (
+                          <tr key={renter.id} className="border-b">
+                            <td className="py-2 px-4 text-sm">{renter.fullname}</td>
+                            <td className="py-2 px-4 text-sm">{renter.sex}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="mt-6 flex justify-end">
+                      <button
+                        onClick={() => setViewingRenters(null)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded"
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}

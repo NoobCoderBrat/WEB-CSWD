@@ -2,8 +2,9 @@ import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
 import supabase from "../supabaseClient";
 import * as XLSX from "xlsx";
+
 const INEvacuaees = () => {
-  const [selectedBarangay, setSelectedBarangay] = useState("Brgy. Buhangin");
+  const [selectedBarangay, setSelectedBarangay] = useState("IN"); // "IN" or "OUT"
   const [selectedDate, setSelectedDate] = useState("2024-06-05");
   const [evacuees, setEvacuees] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,8 +13,9 @@ const INEvacuaees = () => {
   const [student, setStudent] = useState("");
   const [ps, set4ps] = useState("");
   const [ip, setIp] = useState("");
-  
-   
+  const barangay = sessionStorage.getItem("barangay");
+  const [evacCenter, setEvacCenter] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState("");
 
   const stats = [
     {
@@ -33,15 +35,12 @@ const INEvacuaees = () => {
     },
   ];
 
-
-
   const handleExportExcel = () => {
     if (evacuees.length === 0) {
       alert("No data available to export.");
       return;
     }
-  
-    // Prepare the data for Excel
+
     const worksheetData = evacuees.map((evacuee) => ({
       No: evacuee.id,
       Name: evacuee.name,
@@ -51,23 +50,34 @@ const INEvacuaees = () => {
       "Time IN": evacuee.time_in,
       "Time OUT": evacuee.time_out,
     }));
-  
-    // Create a worksheet
+
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-  
-    // Create a workbook and append the worksheet
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Evacuees");
-  
-    // Export to Excel
     XLSX.writeFile(workbook, "Evacuees.xlsx");
   };
 
   const fetch_data = async () => {
     try {
-      const { error, data } = await supabase.from("Evacuees").select("*");
+      const { error, data } = await supabase
+        .from("Evacuees")
+        .select("*")
+        .eq("barangay", barangay);
       if (error) throw error;
-      setEvacuees(data); 
+      setEvacuees(data);
+    } catch (error) {
+      alert("An unexpected error occurred.");
+      console.error("Error during fetching history:", error.message);
+    }
+  };
+
+  const fetch_center = async () => {
+    try {
+      const { error, data } = await supabase
+        .from("EvacuationCenter")
+        .select("name");
+      if (error) throw error;
+      setEvacCenter(data);
     } catch (error) {
       alert("An unexpected error occurred.");
       console.error("Error during fetching history:", error.message);
@@ -79,37 +89,51 @@ const INEvacuaees = () => {
       const { error, data } = await supabase.from("DAF").select("*");
       if (error) throw error;
 
-      const elder = data.filter(item => {
+      const elder = data.filter((item) => {
         const age = parseInt(item.age);
         return age >= 60;
       }).length;
       setSenior(elder);
 
-      const pwd = data.filter(item => {return item.disability !== 'N/A' ;}).length;
+      const pwd = data.filter((item) => {
+        return item.disability !== "N/A";
+      }).length;
       setPWD(pwd);
-      const student = data.filter(item => {return item.occupation == 'Student' ;}).length;
+      const student = data.filter((item) => {
+        return item.occupation == "Student";
+      }).length;
       setStudent(student);
-      const ps = data.filter(item => {return item.status == '4ps' ;}).length;
+      const ps = data.filter((item) => {
+        return item.status == "4ps";
+      }).length;
       set4ps(ps);
-      const ip = data.filter(item => {return item.status == 'ip' ;}).length;
+      const ip = data.filter((item) => {
+        return item.status == "ip";
+      }).length;
       setIp(ip);
-
     } catch (error) {
       alert("An unexpected error occurred.");
       console.error("Error during fetching history:", error.message);
     }
   };
 
-
   useEffect(() => {
-    fetch_data(); 
+    fetch_data();
     fetch_masterlist();
+    fetch_center();
   }, []);
 
-  const filteredData = evacuees.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredData = evacuees.filter((user) => {
+    const nameMatches = user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const centerMatches = selectedCenter
+      ? user.evacuation_center && user.evacuation_center.toLowerCase().includes(selectedCenter.toLowerCase())
+      : true;
+    return nameMatches && centerMatches;
+  });
 
+  useEffect(() => {
+    console.log("selectedCenter updated:", selectedCenter);
+  }, [selectedCenter]);
 
   return (
     <>
@@ -117,19 +141,17 @@ const INEvacuaees = () => {
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
           <main className="flex-1 p-4 sm:p-6 overflow-auto">
+            <div className="flex justify-between items-center mt-5 p-4">
+              <h1 className="text-xl font-semibold text-gray-800">| Evacuees Data</h1>
+            </div>
             <div className="p-6 max-w-7xl mx-auto">
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
                 {stats.map((stat, index) => (
-                  <div
-                    key={index}
-                    className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"
-                  >
+                  <div key={index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
                     <span className="text-2xl">{stat.icon}</span>
                     <div>
-                      <span className={`text-2xl font-bold ${stat.textColor}`}>
-                        {stat.count}
-                      </span>
+                      <span className={`text-2xl font-bold ${stat.textColor}`}>{stat.count}</span>
                       <p className="text-sm text-gray-600">{stat.label}</p>
                     </div>
                   </div>
@@ -144,8 +166,21 @@ const INEvacuaees = () => {
                     onChange={(e) => setSelectedBarangay(e.target.value)}
                     className="border rounded-md px-3 py-2"
                   >
-                    <option>Brgy. Buhangin</option>
-                    <option>Other Barangays...</option>
+                    <option>IN</option>
+                    <option>OUT</option>
+                  </select>
+                  <select
+                    id="evacuation-center"
+                    value={selectedCenter}
+                    onChange={(e) => setSelectedCenter(e.target.value)}
+                    className="border rounded-md px-3 py-2"
+                  >
+                    <option value="">Select Evacuation Center</option>
+                    {evacCenter.map((center) => (
+                      <option key={center.id} value={center.name}>
+                        {center.name}
+                      </option>
+                    ))}
                   </select>
 
                   <input
@@ -194,52 +229,24 @@ const INEvacuaees = () => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          No
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Sex
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Evacuation Center
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                         Time IN
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Time Out
-                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">ID</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Name</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Sex</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Evacuation Center</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Date</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Time</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {filteredData.map((evacuee) => (
                         <tr key={evacuee.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.id}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.sex}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.evacuation_center}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.date}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.time_in}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {evacuee.time_out}
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{evacuee.id}</td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{evacuee.name}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500">{evacuee.sex}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500">{evacuee.evacuation_center}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500">{evacuee.date}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {selectedBarangay === "IN" ? evacuee.time_in : evacuee.time_out}
                           </td>
                         </tr>
                       ))}

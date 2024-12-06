@@ -1,163 +1,204 @@
 import UserSidebar from "./UserSidebar";
 
-const EmergencyHotline = () => {
-  const policeStations = [
-    {
-      name: "MAIN OFFICE",
-      contacts: [
-        { provider: "SMART", number: "09300134533" },
-        { provider: "GLOBE", number: "09300134533" },
-      ],
-    },
-    {
-      name: "STATION 1",
-      contacts: [{ provider: "SMART", number: "09300134533" }],
-    },
-    {
-      name: "STATION 2",
-      contacts: [{ provider: "GLOBE", number: "09300134533" }],
-    },
-    {
-      name: "STATION 3",
-      contacts: [{ provider: "SMART", number: "09300134533" }],
-    },
-    {
-      name: "STATION 4",
-      contacts: [{ provider: "GLOBE", number: "09300134533" }],
-    },
-    {
-      name: "STATION 5",
-      contacts: [{ provider: "SMART", number: "09300134533" }],
-    },
-    {
-      name: "BCMFC",
-      contacts: [{ provider: "GLOBE", number: "09300134533" }],
-    },
-  ];
-
-  const fireProtection = [
-    {
-      name: "MAIN OFFICE",
-      contacts: [
-        { provider: "TNT", number: "09300134533" },
-        { provider: "TM", number: "09300134533" },
-      ],
-    },
-    {
-      name: "LAND LINES",
-      contacts: [
-        { provider: "", number: "(085) 225-0500" },
-        { provider: "", number: "(085) 342-8217" },
-      ],
-    },
-    {
-      name: "CHINESSE VOLUNTER",
-      contacts: [{ provider: "TNT", number: "09300134533" }],
-    },
-  ];
-
-  const cdrrmo = [
-    {
-      name: "CDRRMO",
-      contacts: [
-        { provider: "SMART", number: "09217687287" },
-        { provider: "GLOBE", number: "09561333998" },
-      ],
-    },
-    {
-      name: "LAND LINES",
-      contacts: [{ provider: "", number: "(085) 815-2607" }],
-    },
-    {
-      name: "RADIO FREQUENCY",
-      contacts: [{ provider: "", number: "155.570Mhz" }],
-    },
-  ];
-
-  const coastGuard = [
-    {
-      name: "COAST GUARD",
-      contacts: [{ provider: "SMART", number: "09510914297" }],
-    },
-  ];
-
-  const waterDistrict = [
-    {
-      name: "WATER DISTRICT",
-      contacts: [
-        { provider: "SMART", number: "09189304234" },
-        { provider: "GLOBE", number: "09171888726" },
-      ],
-    },
-    {
-      name: "LAND LINES",
-      contacts: [{ provider: "", number: "(085) 342-3145" }],
-    },
-  ];
-
-  const aneco = [
-    {
-      name: "ANECO",
-      contacts: [{ provider: "TNT", number: "09092668777" }],
-    },
-  ];
-
-  const ContactCard = ({ title, data }) => (
-    <div className="mb-8">
-      <p className="text-gray-600 text-xl font-bold mb-3 tracking-wider">
-        | {title}
-      </p>
-      <hr />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 mb-5">
-        {data.map((station, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
-          >
-            <div className="bg-bttn text-white p-3 font-bold">
-              {station.name}
-            </div>
-            {station.contacts.map((contact, idx) => (
-              <div key={idx} className="flex justify-between items-center p-3">
-                <span className="font-semibold">{contact.provider}</span>
-                <span className="text-txt">{contact.number}</span>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
+const EmergencyHotlines = () => {
   return (
-    <div className="h-screen bg-gray-100 font-mono lg:flex">
-      <UserSidebar />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6 overflow-auto">
-          <div className="mt-8 px-4">
-            <ContactCard
-              title="BUTUAN CITY POLICE STATION"
-              data={policeStations}
-            />
-            <ContactCard
-              title="BUREAU OF FIRE PROTECTION"
-              data={fireProtection}
-            />
-            <ContactCard title="BUTUAN CDRRMO" data={cdrrmo} />
-            <ContactCard
-              title="PHILIPPINES COAST GUARD - BUTUAN"
-              data={coastGuard}
-            />
-            <ContactCard
-              title="BUTUAN CITY WATER DISTRICT"
-              data={waterDistrict}
-            />
-            <ContactCard title="ANECO" data={aneco} />
-          </div>
-        </main>
+    <>
+      <div className="min-h-screen bg-gray-100 font-mono xl:flex">
+        <div className="sticky top-0 h-screen w-72">
+          <UserSidebar />
+        </div>
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
+            <p className="text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
+              | Emergency Hotlines
+            </p>
+            <hr />
+            <div className="max-w-6xl mx-auto p-6 space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-blue-800 mb-4">
+                    <a href="#" className="hover:underline">
+                      Butuan city Police Station
+                    </a>
+                  </h2>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Main office:</h3>
+                        <div className="space-y-1">
+                          <p className="text-sm">TnT/ Smart:</p>
+                          <p className="text-sm text-gray-600">0938-386-3057</p>
+                          <p className="text-sm text-gray-600">0998-598-7292</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Station 1:</h3>
+                        <div className="space-y-1">
+                          <p className="text-sm">TnT/ Smart:</p>
+                          <p className="text-sm text-gray-600">0998-598-7293</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Station 2:</h3>
+                        <div className="space-y-1">
+                          <p className="text-sm">TnT/ Smart:</p>
+                          <p className="text-sm text-gray-600">0998-598-7296</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Station 3:</h3>
+                        <div className="space-y-1">
+                          <p className="text-sm">TnT/ Smart:</p>
+                          <p className="text-sm text-gray-600">0998-598-7297</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Station 4:</h3>
+                        <div className="space-y-1">
+                          <p className="text-sm">TnT/ Smart:</p>
+                          <p className="text-sm text-gray-600">0998-598-7300</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Station 5:</h3>
+                        <div className="space-y-1">
+                          <p className="text-sm">TnT/ Smart:</p>
+                          <p className="text-sm text-gray-600">0998-598-7302</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">BCMFC:</h3>
+                      <div className="space-y-1">
+                        <p className="text-sm">TnT/ Smart:</p>
+                        <p className="text-sm text-gray-600">0930-297-0041</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-blue-800 mb-4">
+                    <a href="#" className="hover:underline">
+                      Bureau of Fire Protection
+                    </a>
+                  </h2>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-semibold">TNT:</h3>
+                      <p className="text-sm text-gray-600">0931-721-8876</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Landlines:</h3>
+                      <p className="text-sm text-gray-600">(085) 225-0500</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">TM:</h3>
+                      <p className="text-sm text-gray-600">(085) 342-8217</p>
+                      <p className="text-sm text-gray-600">0955-214-8542</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Chinese Volunteer:</h3>
+                      <p className="text-sm text-gray-600">0912-362-1333</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-blue-800 mb-4">
+                    <a href="#" className="hover:underline">
+                      Butuan CDRRMO
+                    </a>
+                  </h2>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-semibold">Smart:</h3>
+                      <p className="text-sm text-gray-600">0921-768-7287</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Globe:</h3>
+                      <p className="text-sm text-gray-600">0956-133-3998</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Landlines:</h3>
+                      <p className="text-sm text-gray-600">(085) 815-2607</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Radio Freq:</h3>
+                      <p className="text-sm text-gray-600">155.570Mhz</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-blue-800 mb-4">
+                    <a href="#" className="hover:underline">
+                      BCWD
+                    </a>
+                  </h2>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-semibold">Smart:</h3>
+                      <p className="text-sm text-gray-600">0918-930-4234</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Globe:</h3>
+                      <p className="text-sm text-gray-600">0917-188-8726</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Landline:</h3>
+                      <p className="text-sm text-gray-600">(085) 342-3145</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-bold text-blue-800 mb-4">
+                  <a href="#" className="hover:underline">
+                    LTTMO - Butuan
+                  </a>
+                </h2>
+                <div>
+                  <h3 className="font-semibold">Landline:</h3>
+                  <p className="text-sm text-gray-600">(085) 342-3886</p>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Coast Guard Card */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-blue-800 mb-4">
+                    <a href="#" className="hover:underline">
+                      Philippines Coast Guard - Butuan
+                    </a>
+                  </h2>
+                  <div>
+                    <h3 className="font-semibold">Smart:</h3>
+                    <p className="text-sm text-gray-600">0951-091-4297</p>
+                  </div>
+                </div>
+
+                {/* Aneco Card */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-blue-800 mb-4">
+                    <a href="#" className="hover:underline">
+                      Aneco
+                    </a>
+                  </h2>
+                  <div>
+                    <h3 className="font-semibold">TNT:</h3>
+                    <p className="text-sm text-gray-600">0909-266-8777</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default EmergencyHotline;
+export default EmergencyHotlines;

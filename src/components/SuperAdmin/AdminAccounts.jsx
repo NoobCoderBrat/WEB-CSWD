@@ -12,6 +12,7 @@ const AdminAccounts = () => {
   const [barangay, setBarangay] = useState("");
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [showPassword, setShowPassword] = useState(false); // State for show password
 
   const fetch_data = async () => {
     try {
@@ -25,16 +26,14 @@ const AdminAccounts = () => {
   };
 
   const handleSubmit = async () => {
-    const { data, error } = await supabase.from("Admin").insert([
-      {
-        fullname,
-        position,
-        email,
-        number,
-        password,
-        barangay,
-      },
-    ]);
+    const { data, error } = await supabase.from("Admin").insert([{
+      fullname,
+      position,
+      email,
+      number,
+      password,
+      barangay,
+    }]);
     if (error) {
       console.error("Error inserting data:", error);
       alert("Error inserting data");
@@ -65,8 +64,8 @@ const AdminAccounts = () => {
                   type="text"
                   placeholder="Search..."
                   className="w-full pl-4 pr-10 py-2 border rounded-md"
-                  value={searchQuery} // Bind input to searchQuery state
-                  onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on change
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <button
@@ -200,8 +199,8 @@ const AdminAccounts = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm mb-1">email</label>
+                  <div>
+                    <label className="block text-sm mb-1">Email</label>
                     <input
                       type="email"
                       name="email"
@@ -209,25 +208,31 @@ const AdminAccounts = () => {
                       className="w-full p-2 border border-gray-300 rounded-md"
                     />
                   </div>
-                
+
                   <div>
                     <label className="block text-sm mb-1">Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                </div>
                 <hr />
-
                 <button
-                onClick={handleSubmit}
-                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mt-6"
+                  onClick={handleSubmit}
+                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                 >
                   Create Account
                 </button>

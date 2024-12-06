@@ -29,13 +29,6 @@ const SACenter = () => {
     }));
   };
 
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    setFormData((prev) => ({
-      ...prev,
-      photo: file,
-    }));
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -176,23 +169,7 @@ const SACenter = () => {
                         />
                       </div>
 
-                      <div>
-                        <input
-                          type="file"
-                          name="photo"
-                          onChange={handlePhotoUpload}
-                          className="file-input file-input-bordered w-full"
-                          id="photo-upload"
-                          accept="image/*"
-                        />
-                        {formData.photo && (
-                          <p className="mt-2 text-sm text-gray-600">
-                            Selected: {formData.photo.name}
-                          </p>
-                        )}
-                      </div>
-
-                      <button
+                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mt-6"
                       >

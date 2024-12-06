@@ -44,17 +44,7 @@ const UserSidebar = () => {
                   : "text-lg text-txt flex items-center gap-2 active:opacity-20"
               }
             >
-              <FaFileAlt /> Disaster Forms
-            </NavLink>
-            <NavLink
-              to="/emergencyhotlines"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
-                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
-              }
-            >
-              <FaPhoneAlt /> Emergency Hotlines
+              <FaFileAlt /> Forms
             </NavLink>
             <NavLink
               to="/evacuationcenter"
@@ -66,6 +56,17 @@ const UserSidebar = () => {
             >
               <FaMapMarkerAlt /> Evacuation Center
             </NavLink>
+            <NavLink
+              to="/emergencyhotlines"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
+                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
+              }
+            >
+              <FaPhoneAlt /> Emergency Hotlines
+            </NavLink>
+    
             <NavLink
               to="/evacuationnotice"
               className={({ isActive }) =>
@@ -127,17 +128,7 @@ const UserSidebar = () => {
                 : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
             }
           >
-            <FaFileAlt /> Disaster Forms
-          </NavLink>
-          <NavLink
-            to="/emergencyhotlines"
-            className={({ isActive }) =>
-              isActive
-                ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
-                : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
-            }
-          >
-            <FaPhoneAlt /> Emergency Hotlines
+            <FaFileAlt /> Forms
           </NavLink>
           <NavLink
             to="/evacuationcenter"
@@ -148,6 +139,16 @@ const UserSidebar = () => {
             }
           >
             <FaMapMarkerAlt /> Evacuation Center
+          </NavLink>
+          <NavLink
+            to="/emergencyhotlines"
+            className={({ isActive }) =>
+              isActive
+                ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200 p-1"
+                : "text-lg text-txt flex items-center gap-2 active:opacity-20 p-1"
+            }
+          >
+            <FaPhoneAlt /> Emergency Hotlines
           </NavLink>
           <NavLink
             to="/evacuationnotice"

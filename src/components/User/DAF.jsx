@@ -7,6 +7,7 @@ import { FaFileDownload } from "react-icons/fa";
 import { IoArrowBackCircle } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import supabase from "../supabaseClient";
+import QRCode from 'qrcode';
 
 const DAF = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,10 +20,11 @@ const DAF = () => {
   const [occupation, setOccupation] = useState("");
   const [income, setIncome] = useState("");
   const [dob, setDob] = useState("");
-  const [sex, setSex] = useState("");
+  const [sex, setSex] = useState("Male");
   const [disability, setDisability] = useState("");
   const [status, setStatus] = useState("");
   const [housing, setHousing] = useState("");
+  const [qrcode, setQrCode] = useState("");
 
   const handleSubmit = () => {
     setModalOpen(true);
@@ -51,10 +53,23 @@ const DAF = () => {
       console.error("Error inserting data:", error);
       alert("Error inserting data");
     } else {
-      setSubmitModalOpen(true);
+      generateQRCode();
       const id = data[0].id;
       sessionStorage.setItem('id', id);
      
+    }
+  };
+
+  const generateQRCode = async () => {
+    const name = firstname + "" + surname;
+    try {
+      const data = await QRCode.toDataURL(name);
+      setQrCode(data);
+      console.log(name);
+      console.log(data);
+      setSubmitModalOpen(true);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
     }
   };
 
@@ -355,30 +370,37 @@ const DAF = () => {
 
       {/* Modal for Submit Button */}
       {submitModalOpen && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/4 text-center">
-            <h2 className="text-2xl font-bold text-green-600 mb-4">
-              Successfully Submitted!
-            </h2>
-            <p className="text-md mb-6">
-              Your Disaster Assistance Form has been successfully submitted.
-            </p>
-            <div className="space-y-2">
-              <NavLink to="/familymembers">
-                <button className="w-full btn bg-bttn font-bold text-white hover:bg-bttn">
-                  <IoMdPersonAdd size={18} />
-                  Family Members
-                </button>
-              </NavLink>
-              <button
-                className="w-full btn btn-error font-bold text-white"
-                onClick={handleCloseSubmitModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+  <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
+  <div className="bg-white p-6 rounded-lg shadow-lg w-1/4 text-center">
+    <img
+      src={qrcode}
+      alt="QR Code"
+      className="mx-auto mb-4"
+      style={{ width: '200px', height: '200px' }}
+    />
+    <h2 className="text-2xl font-bold text-green-600 mb-4">
+      Successfully Submitted!
+    </h2>
+    <p className="text-md mb-6">
+      Your Disaster Assistance Form has been successfully submitted. Save QR Code above.
+    </p>
+    <div className="space-y-2">
+      <NavLink to="/familymembers">
+        <button className="w-full btn bg-bttn font-bold text-white hover:bg-bttn">
+          <IoMdPersonAdd size={18} />
+          Family Members
+        </button>
+      </NavLink>
+      <button
+        className="w-full btn btn-error font-bold text-white"
+        onClick={handleCloseSubmitModal}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
       )}
     </>
   );

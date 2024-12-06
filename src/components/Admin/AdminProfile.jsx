@@ -1,17 +1,27 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import supabase from "../supabaseClient";
 
 const AdminProfile = () => {
-  const [profile, setProfile] = useState({
-    surname: "Gerasmio",
-    firstName: "Marc Dominic",
-    middleName: "diko knows",
-    email: "marcgerasmio@gmail.com",
-    dob: "diko knows",
-    sex: "Male",
-    phone: "diko knows",
-    password: "kriziaMarie143_4ever",
-  });
+ const [profile, setProfile] = useState('');
+ const [newPassword, setNewPassword]= useState('');
+ const id = sessionStorage.getItem('id');
+
+ const fetch_profile = async () => {
+  try {
+    const { error, data } = await supabase
+      .from("Admin")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (error) throw error;
+    setProfile(data);
+    console.log(data);
+  } catch (error) {
+    alert("An unexpected error occurred.");
+    console.error("Error during fetching history:", error.message);
+  }
+};
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -32,17 +42,23 @@ const AdminProfile = () => {
     setPasswordForm((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-
-    if (passwordForm.newPassword === passwordForm.confirmPassword) {
-      setProfile((prev) => ({ ...prev, password: passwordForm.newPassword }));
-      setShowPasswordModal(false);
-      alert("Password updated successfully!");
-    } else {
-      alert("Passwords do not match!");
+  const handlePasswordSubmit = async (e) => {
+       e.preventDefault();
+    try {
+      const { error } = await supabase
+        .from("Admin")
+        .update({ password: newPassword })
+        .eq("id", id);
+      if (error) throw error;
+     window.location.reload()
+    } catch (error) {
+      console.error("Error updating evacuation center:", error);
     }
   };
+
+  useEffect(() => {
+    fetch_profile();
+  }, []);
 
   return (
     <>
@@ -54,76 +70,105 @@ const AdminProfile = () => {
               <div className="w-full mx-auto bg-white rounded-lg shadow p-8">
                 {/* Profile Header */}
                 <div className="flex flex-col items-center mb-8">
-                  <div className="relative">
-                    <img
-                      src="https://placehold.co/400"
-                      alt="Profile"
-                      className="w-24 h-24 rounded-full object-cover border-2 border-white shadow"
-                    />
-                  </div>
                   <h1 className="mt-4 text-xl font-semibold text-gray-900">
-                    {profile.firstName} {profile.surname}
+                    {profile.fullname}
                   </h1>
-                  <p className="text-gray-500">Backend Web Developer</p>
+                  <p className="text-gray-500">{profile.position}</p>
                 </div>
 
                 {/* Profile Form */}
                 <form className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Surname */}
-                    <div>
-                      <label
-                        htmlFor="surname"
-                        className="block text-sm font-medium text-blue-900 mb-1"
-                      >
-                        Surname
-                      </label>
-                      <input
-                        type="text"
-                        id="surname"
-                        value={profile.surname}
-                        onChange={handleInputChange}
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-
-                    {/* First Name */}
-                    <div>
-                      <label
-                        htmlFor="firstName"
-                        className="block text-sm font-medium text-blue-900 mb-1"
-                      >
-                        First Name
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        value={profile.firstName}
-                        onChange={handleInputChange}
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-
-                    {/* Middle Name */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label
                         htmlFor="middleName"
                         className="block text-sm font-medium text-blue-900 mb-1"
                       >
-                        Middle Name
+                        Full Name
                       </label>
                       <input
                         type="text"
                         id="middleName"
-                        value={profile.middleName}
-                        onChange={handleInputChange}
+                        value={profile.fullname}
+                        className="input input-bordered w-full"
+                        disabled
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="middleName"
+                        className="block text-sm font-medium text-blue-900 mb-1"
+                      >
+                       Position
+                      </label>
+                      <input
+                        type="text"
+                        id="middleName"
+                        value={profile.position}
+                        className="input input-bordered w-full"
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Date of Birth */}
+                    <div>
+                      <label
+                        htmlFor="dob"
+                        className="block text-sm font-medium text-blue-900 mb-1"
+                      >
+                        Phone Number
+                      </label>
+                      <input
+                        type="text"
+                        id="dob"
+                        value={profile.number}
+                        className="input input-bordered w-full"
+                        disabled
+                      />
+                    </div>
+
+                    {/* Sex */}
+                    <div>
+                      <label
+                        htmlFor="sex"
+                        className="block text-sm font-medium text-blue-900 mb-1"
+                      >
+                      Barangay
+                      </label>
+                      <input
+                        type="text"
+                        id="sex"
+                        value={profile.barangay}
+                        disabled
                         className="input input-bordered w-full"
                       />
                     </div>
                   </div>
 
-                  {/* Password */}
+                  {/* Email */}
                   <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-blue-900 mb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={profile.email}
+                      onChange={handleInputChange}
+                      className="input input-bordered w-full"
+                      disabled
+                    />
+                  </div>
+
+              
+                     {/* Password */}
+                     <div>
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-blue-900 mb-1"
@@ -154,76 +199,6 @@ const AdminProfile = () => {
                       </button>
                     </div>
                   </div>
-
-                  {/* Email */}
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-blue-900 mb-1"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={profile.email}
-                      onChange={handleInputChange}
-                      className="input input-bordered w-full"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Date of Birth */}
-                    <div>
-                      <label
-                        htmlFor="dob"
-                        className="block text-sm font-medium text-blue-900 mb-1"
-                      >
-                        Date of Birth
-                      </label>
-                      <input
-                        type="text"
-                        id="dob"
-                        value={profile.dob}
-                        onChange={handleInputChange}
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-
-                    {/* Sex */}
-                    <div>
-                      <label
-                        htmlFor="sex"
-                        className="block text-sm font-medium text-blue-900 mb-1"
-                      >
-                        Sex
-                      </label>
-                      <input
-                        type="text"
-                        id="sex"
-                        value={profile.sex}
-                        onChange={handleInputChange}
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-
-                    {/* Phone */}
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-blue-900 mb-1"
-                      >
-                        Phone
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        value={profile.phone}
-                        onChange={handleInputChange}
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-                  </div>
                 </form>
 
                 {/* Password Change Modal */}
@@ -239,21 +214,6 @@ const AdminProfile = () => {
                       >
                         <div>
                           <label
-                            htmlFor="currentPassword"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Current Password
-                          </label>
-                          <input
-                            type="password"
-                            id="currentPassword"
-                            value={passwordForm.currentPassword}
-                            onChange={handlePasswordChange}
-                            className="input input-bordered w-full"
-                          />
-                        </div>
-                        <div>
-                          <label
                             htmlFor="newPassword"
                             className="block text-sm font-medium text-gray-700"
                           >
@@ -262,23 +222,7 @@ const AdminProfile = () => {
                           <input
                             type="password"
                             id="newPassword"
-                            value={passwordForm.newPassword}
-                            onChange={handlePasswordChange}
-                            className="input input-bordered w-full"
-                          />
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="confirmPassword"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Confirm New Password
-                          </label>
-                          <input
-                            type="password"
-                            id="confirmPassword"
-                            value={passwordForm.confirmPassword}
-                            onChange={handlePasswordChange}
+                            onChange={(e) => setNewPassword(e.target.value)}
                             className="input input-bordered w-full"
                           />
                         </div>

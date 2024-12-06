@@ -9,7 +9,7 @@ const Forms = () => {
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-4 sm:p-6 overflow-auto">
           <p className="text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
-            | Disaster Forms
+            | Forms
           </p>
           <hr />
           <div className="flex flex-col sm:flex-row justify-center content-center gap-4 sm:gap-10 mt-6 sm:mt-10">

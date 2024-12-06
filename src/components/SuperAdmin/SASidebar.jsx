@@ -99,16 +99,6 @@ const SASidebar = () => {
               <FaPhone /> Hotlines
             </NavLink>
             <NavLink
-              to="/saprofile"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
-                  : "text-lg text-txt flex items-center gap-2 active:opacity-20"
-              }
-            >
-              <FaUser /> Profile
-            </NavLink>
-            <NavLink
               to="/"
               className={({ isActive }) =>
                 isActive
@@ -200,16 +190,6 @@ const SASidebar = () => {
             }
           >
             <FaPhone /> Hotlines
-          </NavLink>
-          <NavLink
-            to="/saprofile"
-            className={({ isActive }) =>
-              isActive
-                ? "text-lg text-txt flex items-center gap-2 active:opacity-20 bg-gray-200"
-                : "text-lg text-txt flex items-center gap-2 active:opacity-20"
-            }
-          >
-            <FaUser /> Profile
           </NavLink>
           <hr />
           <NavLink

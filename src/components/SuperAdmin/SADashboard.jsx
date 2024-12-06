@@ -208,27 +208,6 @@ const SADashboard = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Family Comparison */}
-                <div className="bg-white p-4 rounded-lg shadow">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">
-                      Number of Families Who Evacuated
-                    </h2>
-                    <select
-                      className="border rounded px-2 py-1 text-sm"
-                      value={familyComparisonView}
-                      onChange={(e) => setFamilyComparisonView(e.target.value)}
-                    >
-                      <option>Weekly Comparison</option>
-                      <option>Monthly Comparison</option>
-                      <option>Yearly Comparison</option>
-                    </select>
-                  </div>
-                  <Bar data={familyData} options={chartOptions} />
-                </div>
-              </div>
             </div>
           </main>
         </div>

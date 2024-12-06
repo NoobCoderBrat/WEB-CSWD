@@ -39,6 +39,8 @@ const Login = () => {
     if (data && data.password === password && data.email === email) {
       const id = data.id;
       sessionStorage.setItem('id', id);
+      const barangay = data.barangay;
+      sessionStorage.setItem('barangay', barangay);
       navigate("/admindashboard")
     }
     
