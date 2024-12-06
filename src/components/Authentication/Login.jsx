@@ -12,67 +12,56 @@ const Login = () => {
 
   const superadmin = async () => {
     const { data } = await supabase
-    .from('SuperAdmin')
-    .select('*')
-    .eq('email', email)
-    .single();
+      .from("SuperAdmin")
+      .select("*")
+      .eq("email", email)
+      .single();
 
     if (data && data.password === password && data.email === email) {
       const id = data.id;
-      sessionStorage.setItem('id', id);
-      navigate("/sadashboard")
-    }
-    
-    else {
-      alert('Wrong Credentials');
+      sessionStorage.setItem("id", id);
+      navigate("/sadashboard");
+    } else {
+      alert("Wrong Credentials");
       setIsLoading(false);
     }
-  }
+  };
 
   const admin = async () => {
     const { data } = await supabase
-    .from('Admin')
-    .select('*')
-    .eq('email', email)
-    .single();
+      .from("Admin")
+      .select("*")
+      .eq("email", email)
+      .single();
 
     if (data && data.password === password && data.email === email) {
       const id = data.id;
-      sessionStorage.setItem('id', id);
+      sessionStorage.setItem("id", id);
       const barangay = data.barangay;
-      sessionStorage.setItem('barangay', barangay);
-      navigate("/admindashboard")
-    }
-    
-    else {
-      alert('Wrong Credentials');
+      sessionStorage.setItem("barangay", barangay);
+      navigate("/admindashboard");
+    } else {
+      alert("Wrong Credentials");
       setIsLoading(false);
     }
-  }
+  };
 
   const check = () => {
-    if (email === 'superadmin@gmail.com'){
+    if (email === "superadmin@gmail.com") {
       superadmin();
-    }
-    else{
+    } else {
       admin();
     }
   };
 
-
-
   return (
     <>
-      <div className="flex justify-center content-center font-mono p-10 bg-base-200 min-h-screen">
-        <div className="w-1/3 p-10 rounded-lg text-black shadow-2xl border bg-white">
-          <div className="flex justify-center mt-20">
-            <img
-              src="logo.png"
-              alt="gabay-image-logo"
-              className="h-24 w-26"
-            />
+      <div className="flex justify-center items-center font-mono p-4 sm:p-10 bg-base-200 min-h-screen">
+        <div className="w-full sm:w-96 md:w-1/3 p-6 sm:p-10 rounded-lg text-black shadow-2xl border bg-white">
+          <div className="flex justify-center sm:mt-20">
+            <img src="logo.png" alt="gabay-image-logo" className="h-24 w-26" />
           </div>
-          <h1 className="mb-8 text-5x sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-wide mt-3 text-center">
+          <h1 className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide mt-3 text-center">
             Gabay
           </h1>
           <div className="mt-6">
@@ -93,7 +82,6 @@ const Login = () => {
                   placeholder="example@gmail.com"
                   required
                   onChange={(e) => setEmail(e.target.value)}
-                  
                 />
               </label>
             </div>
@@ -149,42 +137,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-
-      {/* toast
-      <div className="toast toast-top toast-end font-mono">
-        <div className="alert alert-success">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 shrink-0 stroke-current text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span className="text-white">Login successfully.</span>
-        </div>
-        <div className="alert alert-error">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 shrink-0 stroke-current text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span className="text-white">Login failed.</span>
-        </div>
-      </div> */}
     </>
   );
 };

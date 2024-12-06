@@ -4,12 +4,13 @@ const EmergencyHotlines = () => {
   return (
     <>
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
-        <div className="sticky top-0 h-screen w-72">
-          <UserSidebar />
-        </div>
+        {/* <div className="sticky top-0 h-screen w-full md:w-72"> */}
+        <UserSidebar />
+        {/* </div> */}
         <div className="flex-1 flex flex-col overflow-y-auto">
           <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
-            <p className="text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
+            {/* Hide this on mobile view */}
+            <p className="hidden sm:block text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
               | Emergency Hotlines
             </p>
             <hr />

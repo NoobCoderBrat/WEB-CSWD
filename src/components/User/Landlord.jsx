@@ -11,6 +11,7 @@ import supabase from "../supabaseClient";
 const Landlord = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const [fullName, setFullName] = useState("");
   const [barangay, setBarangay] = useState("");
@@ -18,17 +19,18 @@ const Landlord = () => {
   const [sex, setSex] = useState("Male");
 
   const handleSubmit = async () => {
+    setIsLoading(true); // Start loading animation
     try {
       // Insert data into the LandLord table
       const { data, error } = await supabase
-        .from('LandLord')
+        .from("LandLord")
         .insert([
           {
             fullName,
             barangay,
             age: age,
             sex: sex,
-          }
+          },
         ])
         .select();
 
@@ -37,15 +39,13 @@ const Landlord = () => {
       }
 
       const id = data[0].id;
-      sessionStorage.setItem('id', id);
+      sessionStorage.setItem("id", id);
       setSubmitModalOpen(true);
     } catch (error) {
-      console.error('Error submitting data:', error.message);
+      console.error("Error submitting data:", error.message);
+    } finally {
+      setIsLoading(false); // Stop loading animation
     }
-  };
-
-  const handleFormSubmit = () => {
-    
   };
 
   const handleCloseModal = () => {
@@ -78,7 +78,7 @@ const Landlord = () => {
                 <h3 className="text-md font-bold italic text-gray-600 mb-4">
                   Landlord's Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-7">
                   <div>
                     <label
                       htmlFor="fullName"
@@ -112,7 +112,7 @@ const Landlord = () => {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-7">
                   <div>
                     <label
                       htmlFor="age"
@@ -148,11 +148,16 @@ const Landlord = () => {
 
                 <div className="flex justify-end mt-10 gap-3">
                   <button
-                    className="w-1/4 px-4 py-2 bg-success text-white btn font-bold hover:bg-success"
+                    className="w-full sm:w-1/4 md:w-1/4 lg:w-1/4 px-4 py-2 bg-success text-white btn font-bold hover:bg-success flex items-center justify-center"
                     onClick={handleSubmit}
+                    disabled={isLoading} // Disable button during loading
                   >
-                    <LuSend />
-                    Submit
+                    {isLoading ? (
+                      <div className="animate-spin border-4 border-t-transparent border-white w-5 h-5 rounded-full mr-2"></div> // Loading spinner
+                    ) : (
+                      <LuSend />
+                    )}
+                    {isLoading ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </div>
@@ -161,7 +166,9 @@ const Landlord = () => {
             {/* Modal for Submit Button */}
             {submitModalOpen && (
               <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-1/4 text-center">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-3/4 md:w-1/3 lg:w-1/4 text-center">
+                  {" "}
+                  {/* Responsive modal width */}
                   <h2 className="text-2xl font-bold text-green-600 mb-4">
                     Successfully Submitted!
                   </h2>
@@ -190,7 +197,7 @@ const Landlord = () => {
             {/* Modal for QR Code */}
             {modalOpen && (
               <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-1/4">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-3/4 md:w-1/4 lg:w-1/4">
                   <div className="flex justify-center mb-10 text-txt">
                     <BsQrCode size={300} />
                   </div>

@@ -66,7 +66,7 @@ const UserSidebar = () => {
             >
               <FaPhoneAlt /> Emergency Hotlines
             </NavLink>
-    
+
             <NavLink
               to="/evacuationnotice"
               className={({ isActive }) =>
@@ -88,14 +88,14 @@ const UserSidebar = () => {
               <FaQuestionCircle /> FAQs
             </NavLink>
             <NavLink
-              to="/"
+              to="/login"
               className={({ isActive }) =>
                 isActive
-                  ? "text-lg flex items-center gap-2 active:opacity-20 bg-gray-200 text-error"
-                  : "text-lg flex items-center gap-2 active:opacity-20 text-error"
+                  ? "text-lg flex items-center gap-2 active:opacity-20  text-success p-1"
+                  : "text-lg flex items-center gap-2 active:opacity-20 text-success p-1"
               }
             >
-              <FaSignOutAlt /> Logout
+              <FaSignOutAlt /> Login
             </NavLink>
           </ul>
           <div className="p-4 border-t">

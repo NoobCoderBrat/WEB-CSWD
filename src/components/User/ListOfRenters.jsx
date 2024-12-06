@@ -14,6 +14,11 @@ const ListOfRenters = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Modal States
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState(""); // "success" or "error"
+
   // Function to add a new renter form
   const addRenter = () => {
     setRenters((prevRenters) => [
@@ -39,32 +44,35 @@ const ListOfRenters = () => {
   };
 
   const handleSubmit = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
- 
       const rentersData = renters.map((renter) => ({
         fullname: renter.fullname,
         sex: renter.sex,
         rental_type: renter.rentalType,
-        landlord_id: landlord_id, 
+        landlord_id: landlord_id,
       }));
-  
 
-      const { data, error } = await supabase.from("Renters").insert(rentersData);
-  
+      const { data, error } = await supabase
+        .from("Renters")
+        .insert(rentersData);
+
       if (error) {
         throw new Error(error.message);
       }
-  
-      console.log("Renters Data Submitted:", data);
-  
 
+      // Success response
       setRenters([{ id: 1, fullname: "", sex: "", rentalType: "" }]);
-  
+      setModalMessage("Renters have been successfully added!");
+      setModalType("success");
+      setModalOpen(true);
     } catch (error) {
-      console.error("Submission failed:", error);
+      // Error response
+      setModalMessage("Failed to add renters. Please try again.");
+      setModalType("error");
+      setModalOpen(true);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -74,8 +82,8 @@ const ListOfRenters = () => {
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-4 overflow-auto">
           <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
-            <div className="flex justify-between mb-6">
-              <h2 className="text-2xl font-semibold italic flex gap-5 mt-1">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+              <h2 className="text-2xl font-semibold italic flex gap-5 mt-1 sm:mt-0 sm:text-left text-center">
                 <NavLink to="/forms">
                   <button className="mt-1">
                     <IoArrowBackCircle />
@@ -83,8 +91,9 @@ const ListOfRenters = () => {
                 </NavLink>
                 List of Renters
               </h2>
+              {/* Add Renter Button */}
               <button
-                className="btn bg-bttn font-bold text-white"
+                className="btn bg-bttn font-bold text-white mt-4 sm:mt-0 sm:ml-4"
                 onClick={addRenter}
               >
                 <IoMdPersonAdd />
@@ -167,7 +176,7 @@ const ListOfRenters = () => {
                       }
                       className="select select-bordered w-full max-w-xs"
                     >
-                       <option>Select</option>
+                      <option>Select</option>
                       <option>House</option>
                       <option>Pad</option>
                       <option>Room</option>
@@ -180,11 +189,11 @@ const ListOfRenters = () => {
 
             <div className="flex justify-end mt-10 gap-3">
               <button
-                className={`w-1/4 text-white btn font-bold ${
+                className={`w-full sm:w-1/4 text-white btn font-bold ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-success hover:bg-success"
-                }`}
+                } p-3 text-center`}
                 onClick={handleSubmit}
                 disabled={isLoading}
               >
@@ -201,6 +210,28 @@ const ListOfRenters = () => {
           </div>
         </main>
       </div>
+
+      {/* Modal for success/error */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 sm:w-1/3 md:w-1/4 lg:w-1/4 text-center">
+            <h2
+              className={`text-2xl font-bold ${
+                modalType === "success" ? "text-green-600" : "text-red-600"
+              } mb-4`}
+            >
+              {modalType === "success" ? "Success!" : "Error!"}
+            </h2>
+            <p className="text-md mb-6">{modalMessage}</p>
+            <button
+              className="btn w-full bg-bttn text-white font-bold hover:bg-bttn"
+              onClick={() => setModalOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

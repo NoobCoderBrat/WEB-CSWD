@@ -25,7 +25,6 @@ const FamilyMembers = () => {
     },
   ]);
 
-  // Add a new family member
   const addFamilyMember = () => {
     setFamilyMembers((prevMembers) => [
       ...prevMembers,
@@ -44,14 +43,12 @@ const FamilyMembers = () => {
     ]);
   };
 
-  // Remove a family member
   const deleteFamilyMember = (id) => {
     setFamilyMembers((prevMembers) =>
       prevMembers.filter((member) => member.id !== id)
     );
   };
 
-  // Update field values for a specific family member
   const handleInputChange = (id, field, value) => {
     setFamilyMembers((prevMembers) =>
       prevMembers.map((member) =>
@@ -60,13 +57,12 @@ const FamilyMembers = () => {
     );
   };
 
-
   const handleSubmit = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       const familyData = familyMembers.map((member) => ({
         ...member,
-        head_id, 
+        head_id,
       }));
       const { data, error } = await supabase
         .from("FamilyMembers")
@@ -88,23 +84,22 @@ const FamilyMembers = () => {
           health: "",
           remarks: "",
         },
-      ]); 
+      ]);
     } catch (error) {
       console.error("Submission failed:", error);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="h-screen bg-gray-100 font-mono lg:flex">
       <UserSidebar />
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-4 overflow-auto">
-          <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
-            <div className="flex justify-between mb-6">
-              <h2 className="text-2xl font-semibold italic flex gap-5 mt-1">
+          <div className="w-full mx-auto bg-white rounded shadow-lg p-6 md:p-10 border border-blue-100">
+            <div className="flex flex-col md:flex-row justify-between mb-6">
+              <h2 className="text-xl md:text-2xl font-semibold italic mt-1 mb-4 md:mb-0">
                 <NavLink to="/daf">
                   <button className="mt-1">
                     <IoArrowBackCircle />
@@ -138,7 +133,7 @@ const FamilyMembers = () => {
                     <IoMdClose size={20} />
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                   <div>
                     <label
                       htmlFor={`fullname-${member.id}`}
@@ -193,7 +188,7 @@ const FamilyMembers = () => {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   <div>
                     <label
                       htmlFor={`age-${member.id}`}
@@ -277,7 +272,7 @@ const FamilyMembers = () => {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                   <div>
                     <label
                       htmlFor={`health-${member.id}`}
@@ -326,7 +321,7 @@ const FamilyMembers = () => {
 
             <div className="flex justify-end mt-10 gap-3">
               <button
-                className={`w-1/4 text-white btn font-bold ${
+                className={`w-full sm:w-1/4 text-white btn font-bold ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-success hover:bg-success"

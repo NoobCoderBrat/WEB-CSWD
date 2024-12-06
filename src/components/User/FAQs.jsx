@@ -3,14 +3,16 @@ import UserSidebar from "./UserSidebar";
 const FAQs = () => {
   return (
     <>
-      <div className="h-screen bg-gray-100 font-mono lg:flex">
+      <div className="min-h-screen bg-gray-100 font-mono lg:flex">
         <UserSidebar />
         <div className="flex-1 flex flex-col">
           <main className="flex-1 p-6 overflow-auto">
-            <p className="text-gray-600 text-xl font-bold mt-2 mb-5 p-4">
+            {/* Hide this on mobile view */}
+            <p className="hidden sm:block text-gray-600 text-xl font-bold mt-2 mb-5 p-4">
               | Frequently Asked Questions
             </p>
             <hr />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
               <div className="bg-white p-4 rounded-lg shadow-xl">
                 {/* About Evacuation Center */}
@@ -27,9 +29,9 @@ const FAQs = () => {
                       <div className="collapse-content text-sm text-gray-500">
                         <p>
                           You can look for your designated evacuation center
-                          that was assign to your Barangay. The Barangay has
-                          more than one evacuation center make sure to find
-                          another evacuation center if others are not available
+                          that was assigned to your Barangay. The Barangay has
+                          more than one evacuation center; make sure to find
+                          another evacuation center if others are not available.
                         </p>
                       </div>
                     </div>
