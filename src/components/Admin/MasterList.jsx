@@ -4,7 +4,9 @@ import supabase from "../supabaseClient";
 
 const MasterList = () => {
   const [data, setData] = useState([]);
-  const [editingItem, setEditingItem] = useState(null); // For handling the edit form
+  const [editingItem, setEditingItem] = useState(null); 
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const [formData, setFormData] = useState({
     surname: "",
     firstname: "",
@@ -15,8 +17,17 @@ const MasterList = () => {
     dob: "",
     sex: "",
   });
-  const [viewingFamilyMember, setViewingFamilyMember] = useState(null); // For the family member modal
-  const [familyMemberData, setFamilyMemberData] = useState([]); // To hold fetched family member data
+  const [viewingFamilyMember, setViewingFamilyMember] = useState(null); 
+  const [familyMemberData, setFamilyMemberData] = useState([]);
+  const [selectedMember, setSelectedMember] = useState([]);
+  const [fullname, setFullName] = useState('');
+  const [relation, setRelation] = useState('');
+  const [dob, setDob] = useState('');
+  const [age, setAge] = useState('');
+  const [sex, setSex] = useState('');
+  const [education, setEducation] = useState('');
+  const [occupation, setOccupation] = useState('');
+
 
   // Fetch data from the DAF table
   const fetch_data = async () => {
@@ -63,6 +74,17 @@ const MasterList = () => {
     }
   };
 
+  const handleDeleteMember = async (id) => {
+    try {
+      const { error } = await supabase.from("FamilyMembers").delete().eq("id", id);
+      if (error) throw error;
+     window.location.reload();
+    } catch (error) {
+      console.error("Error deleting record:", error.message);
+      alert("An error occurred while deleting the record.");
+    }
+  };
+
   // Handle editing a record
   const handleEdit = (item) => {
     setEditingItem(item); // Set the item to be edited
@@ -77,6 +99,20 @@ const MasterList = () => {
       sex: item.sex,
     });
   };
+
+  const familyedit = (item) => {
+  setSelectedMember(item);
+  setFullName(item.fullname || "");
+  setRelation(item.relation || "");
+  setDob(item.dob || "");
+  setAge(item.age || "");
+  setSex(item.sex || "");
+  setEducation(item.education || "");
+  setOccupation(item.occupation || "");
+  setShowEditModal(true);
+
+  };
+
 
   // Handle form submission for editing
   const handleSubmit = async (e) => {
@@ -97,6 +133,20 @@ const MasterList = () => {
     } catch (error) {
       console.error("Error updating record:", error.message);
       alert("An error occurred while updating the record.");
+    }
+  };
+
+  const handleUpdateMember = async () => {
+    try {
+      const { error } = await supabase
+        .from("FamilyMembers")
+        .update({ fullname, relation, dob, sex, age, education, occupation })
+        .eq("id", selectedMember.id);
+      if (error) throw error;
+    window.location.reload();
+    } catch (error) {
+      console.error("Error updating evacuation center:", error);
+      alert("Error updating Data .");
     }
   };
 
@@ -206,9 +256,26 @@ const MasterList = () => {
                       <h3 className="text-lg font-semibold">Family Members</h3>
                       <ul>
                         {familyMemberData.map((member) => (
-                          <li key={member.id} className="py-2">
-                            {member.fullname} - {member.relation}
-                          </li>
+                    <li key={member.id} className="py-2 flex items-center justify-between">
+                    <span>
+                      •{member.fullname}
+                    </span>
+                    <div className="flex space-x-2">
+                      <button
+                        className="btn btn-sm bg-bttn hover:bg-bttn text-white"
+                        onClick={() => familyedit(member)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-error text-white"
+                        onClick={() => handleDeleteMember(member.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                  
                         ))}
                       </ul>
                       <div className="mt-6 flex justify-end">
@@ -222,6 +289,100 @@ const MasterList = () => {
                     </div>
                   </div>
                 )}
+
+      {/* Edit Member Modal */}
+      {showEditModal &&(
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-xl w-96"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold">Edit Family Member Details</h2>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div> 
+              <label>FullName</label>
+              <input
+                type="text"
+                value={fullname}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+              </div>
+              <div>
+              <label>Relationship</label>
+              <input
+                type="text"
+                value={relation}
+                onChange={(e) => setRelation(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              /> </div>
+           <div>   
+           <label>Date of Birth</label>
+              <input
+                type="date"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />  </div>
+             <div>
+             <label>Age</label>
+              <input
+                type="text"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+             </div>
+                  <div>
+                  <label>Sex</label>
+              <input
+                type="text"
+                value={sex}
+                onChange={(e) => setSex(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+                  </div>
+                  <div>
+                  <label>Education</label>
+              <input
+                type="text"
+                value={education}
+                onChange={(e) => setEducation(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+                  </div>
+                  <div>
+                  <label>Occupation</label>
+              <input
+                type="text"
+                value={occupation}
+                onChange={(e) => setOccupation(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+              
+                  </div>
+            
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                onClick={() => setShowEditModal(false)}
+              >
+                Close
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={handleUpdateMember}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
               </div>
             </div>
           </main>

@@ -57,6 +57,25 @@ const Evacuation = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    const { data, error } = await supabase.from("EvacuationCenter").insert([
+      {
+       name,
+       location,
+       capacity,
+       image,
+       status : 'Open'
+      },
+    ]);
+    if (error) {
+      console.error("Error inserting data:", error);
+      alert("Error inserting data");
+    } else {
+      console.log("Data inserted successfully:", data);
+      window.location.reload();
+    }
+  };
+
   const handleUpdate = async () => {
     try {
       const { error } = await supabase
@@ -128,7 +147,7 @@ const Evacuation = () => {
                     <img
                       src={center.image}
                       alt={center.name}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-48 object-contain"
                     />
                     <div className="p-4">
                       <h3 className="text-lg font-semibold mb-2">{center.name}</h3>
@@ -150,6 +169,80 @@ const Evacuation = () => {
           </div>
         </main>
       </div>
+
+      {/* Create Modal */}
+      {showCreateModal &&(
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-xl w-96"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold">Add Evacuation Center</h2>
+            <div className="mt-4">
+              <label>Name</label>
+              <input
+                type="text"
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+              <label>Location</label>
+              <input
+                type="text"
+                onChange={(e) => setLocation(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+              <label>Capacity</label>
+              <input
+                type="text"
+                onChange={(e) => setCapacity(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+            </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Photo
+                </label>
+                <div className="mt-1 flex items-center">
+                  <input
+                    type="text"
+                    value={
+                      image
+                    }
+                    readOnly
+                    className="input input-bordered w-full"
+                    placeholder="No file selected"
+                  />
+                  <label className="btn bg-bttn text-white font-bold ml-2 cursor-pointer hover:bg-bttn">
+                    <span>Upload Photo</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handlePhotoUpload}
+                    />
+                  </label>
+                </div>
+              </div>
+            <div className="mt-4 flex justify-between">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                onClick={() => setShowCreateModal(false)}
+              >
+                Close
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={handleSubmit}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Update Modal */}
       {isModalOpen && selectedCenter && (

@@ -11,10 +11,15 @@ const LandlordList = () => {
     age: "",
     sex: "",
   });
-  const [viewingRenters, setViewingRenters] = useState(null); // For storing renters data
-  const [landlordIdForRenters, setLandlordIdForRenters] = useState(null); // To store selected landlord's ID for fetching renters data
+  const [viewingRenters, setViewingRenters] = useState(null); 
+  const [landlordIdForRenters, setLandlordIdForRenters] = useState(null); 
+  const [renterModal, setRenterModal] = useState(false);
+  const [fullname, setFullName] = useState('');
+  const [sex, setSex] = useState('');
+  const [rental_type, setRentalType] = useState('');
+  const [selectedRenter, setSelectedRenter] = useState('');
 
-  // Fetch data from the LandLord table
+
   const fetch_data = async () => {
     try {
       const { data, error } = await supabase.from("LandLord").select("*");
@@ -26,13 +31,12 @@ const LandlordList = () => {
     }
   };
 
-  // Fetch renters data based on landlord's ID
   const fetchRenters = async (landlordId) => {
     try {
       const { data, error } = await supabase
         .from("Renters")
         .select("*")
-        .eq("landlord_id", landlordId); // Assuming Renters has a landlord_id column
+        .eq("landlord_id", landlordId); 
       if (error) throw error;
       setViewingRenters(data);
     } catch (error) {
@@ -42,10 +46,9 @@ const LandlordList = () => {
   };
 
   useEffect(() => {
-    fetch_data(); // Fetch data on component mount
+    fetch_data(); 
   }, []);
 
-  // Handle deleting a record
   const handleDelete = async (id) => {
     try {
       const { error } = await supabase.from("LandLord").delete().eq("id", id);
@@ -58,7 +61,7 @@ const LandlordList = () => {
     }
   };
 
-  // Handle editing a record
+
   const handleEdit = (item) => {
     setEditingItem(item);
     setFormData({
@@ -69,7 +72,16 @@ const LandlordList = () => {
     });
   };
 
-  // Handle form submission for editing
+  const editRenter = (renter) => {
+    setSelectedRenter(renter);
+    setFullName(renter.fullname || "");
+    setSex(renter.sex || "");
+    setRentalType(renter.rental_type || "");
+    setRenterModal(true);
+  };
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -91,11 +103,38 @@ const LandlordList = () => {
     }
   };
 
-  // View renters of a specific landlord
+
   const handleViewRenters = (landlordId) => {
-    setLandlordIdForRenters(landlordId); // Set the selected landlord ID
-    fetchRenters(landlordId); // Fetch the renters for that landlord
+    setLandlordIdForRenters(landlordId); 
+    fetchRenters(landlordId); 
   };
+
+  const handleUpdateRenter = async () => {
+    try {
+      const { error } = await supabase
+        .from("Renters")
+        .update({ fullname, rental_type, sex, })
+        .eq("id", selectedRenter.id);
+      if (error) throw error;
+    window.location.reload();
+    } catch (error) {
+      console.error("Error updating evacuation center:", error);
+      alert("Error updating Data .");
+    }
+  };
+
+  const handleDeleteRenter = async (id) => {
+    try {
+      const { error } = await supabase.from("Renters").delete().eq("id", id);
+      if (error) throw error;
+     window.location.reload();
+    } catch (error) {
+      console.error("Error deleting record:", error.message);
+      alert("An error occurred while deleting the record.");
+    }
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gray-100 font-mono xl:flex">
@@ -218,6 +257,9 @@ const LandlordList = () => {
                           <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Renter Gender
                           </th>
+                          <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           Actions
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -225,6 +267,22 @@ const LandlordList = () => {
                           <tr key={renter.id} className="border-b">
                             <td className="py-2 px-4 text-sm">{renter.fullname}</td>
                             <td className="py-2 px-4 text-sm">{renter.sex}</td>
+                            <td>
+                            <div className="flex space-x-2">
+                            <button
+                              className="btn btn-sm bg-bttn hover:bg-bttn text-white"
+                              onClick={() => editRenter(renter)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="btn btn-sm btn-error text-white"
+                              onClick={() => handleDeleteRenter(renter.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -240,6 +298,63 @@ const LandlordList = () => {
                   </div>
                 </div>
               )}
+
+{renterModal &&(
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          // onClick={() => setShowEditModal(false)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-xl w-96"
+            // onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold">Edit Renter  Details</h2>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div> 
+              <label>FullName</label>
+              <input
+                type="text"
+                value={fullname}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+              </div>
+                  <div>
+                  <label>Sex</label>
+              <input
+                type="text"
+                value={sex}
+                onChange={(e) => setSex(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+                  </div>
+                  <div>
+                  <label>Rental Type</label>
+              <input
+                type="text"
+                value={rental_type}
+                onChange={(e) => setRentalType(e.target.value)}
+                className="w-full border p-2 rounded mt-2"
+              />
+                  </div>
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                onClick={() => setRenterModal(false)}
+              >
+                Close
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={handleUpdateRenter}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
             </div>
           </div>
         </main>
