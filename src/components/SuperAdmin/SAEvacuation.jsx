@@ -16,12 +16,14 @@ const SAEvacuation = () => {
   const [file, setFile] = useState("");
   const [evacuationCenters, setEvacuationCenters] = useState([]);
   const [brgy, setBrgy] = useState("");
-  const [selectedId, setselectedID] = useState('');
+  const [selectedId, setselectedID] = useState("");
   const [brgyData, setBrgyData] = useState([]);
 
   const fetch_data = async () => {
     try {
-      const { error, data } = await supabase.from("EvacuationCenter").select("*");
+      const { error, data } = await supabase
+        .from("EvacuationCenter")
+        .select("*");
       if (error) throw error;
       setEvacuationCenters(data);
     } catch (error) {
@@ -31,15 +33,15 @@ const SAEvacuation = () => {
   };
 
   const handleCardClick = (center) => {
-      fetch_barangay(center);
-      setShowBarangay(true);
+    fetch_barangay(center);
+    setShowBarangay(true);
   };
 
   const submitBarangay = async () => {
     const { data, error } = await supabase.from("Barangay").insert([
       {
-      center_id : selectedId,
-      name : brgy,
+        center_id: selectedId,
+        name: brgy,
       },
     ]);
     if (error) {
@@ -53,8 +55,10 @@ const SAEvacuation = () => {
 
   const fetch_barangay = async (center) => {
     try {
-      const { error, data } = await supabase.from("Barangay").select("*")
-      .eq("center_id", center.id);
+      const { error, data } = await supabase
+        .from("Barangay")
+        .select("*")
+        .eq("center_id", center.id);
       if (error) throw error;
       setBrgyData(data);
     } catch (error) {
@@ -73,10 +77,8 @@ const SAEvacuation = () => {
   };
 
   const closeBarangay = () => {
-  window.location.reload();
+    window.location.reload();
   };
-
-
 
   const handlePhotoUpload = async (e) => {
     const selectedFile = e.target.files[0];
@@ -108,11 +110,11 @@ const SAEvacuation = () => {
   const handleSubmit = async () => {
     const { data, error } = await supabase.from("EvacuationCenter").insert([
       {
-       name,
-       location,
-       capacity,
-       image,
-       status : 'Open'
+        name,
+        location,
+        capacity,
+        image,
+        status: "Open",
       },
     ]);
     if (error) {
@@ -123,53 +125,45 @@ const SAEvacuation = () => {
       window.location.reload();
     }
   };
-  
-
 
   useEffect(() => {
     fetch_data();
   }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 font-mono xl:flex">
       <SASidebar />
       <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-4 sm:p-6 overflow-auto">
-          <div className="bg-gray-100 p-6">
+        <main className="flex-1 sm:p-6 overflow-auto">
+          <div className="bg-gray-100 p-4 sm:p-6">
             <div className="max-w-7xl mx-auto">
-              {/* Header */}
-              <div className="flex justify-between items-center mb-6">
-                <h1 className="text-xl font-semibold text-gray-800">
+              <div className="flex flex-wrap justify-between items-center mb-6">
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
                   | List of Evacuation Center
                 </h1>
-                <div className="space-x-2">
-                  <button
-                    className="bg-bttn text-white px-4 py-2 rounded-md hover:bg-bttn"
-                    onClick={() => setShowCreateModal(true)}
-                  >
-                    Create Evacuation Center
-                  </button>
-                </div>
+                <button
+                  className="bg-bttn text-white px-4 py-2 text-sm md:text-base rounded-md hover:bg-bttn w-full sm:w-auto"
+                  onClick={() => setShowCreateModal(true)}
+                >
+                  Create Evacuation Center
+                </button>
               </div>
               <hr />
-
-              {/* Navigation */}
               {activeView === "table" && (
                 <div className="mb-6 mt-8">
-                  <div className="flex items-center space-x-2 text-sm text-blue-600">
-                    <button onClick={handleBackToCards}>
+                  <div className="flex flex-wrap items-center space-x-2 text-sm text-blue-600">
+                    <button onClick={handleBackToCards} className="truncate">
                       Evacuation center
                     </button>
                     <span>/</span>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 truncate">
                       {selectedCenter?.name}
                     </span>
                   </div>
                 </div>
               )}
-
-              {/* Cards View */}
               {activeView === "cards" && (
-                <div className="grid md:grid-cols-2 gap-6 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
                   {evacuationCenters.map((center) => (
                     <div
                       key={center.id}
@@ -179,10 +173,10 @@ const SAEvacuation = () => {
                       <img
                         src={center.image}
                         alt={center.name}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-40 sm:h-48 object-cover"
                       />
                       <div className="p-4">
-                        <h3 className="text-lg font-semibold mb-2">
+                        <h3 className="text-base sm:text-lg font-semibold mb-2 truncate">
                           {center.name}
                         </h3>
                         <div className="flex items-center text-gray-600 mb-2">
@@ -261,10 +255,12 @@ const SAEvacuation = () => {
 
       {/* Create Evacuation Center Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-[500px] p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">CREATE EVACUATION CENTER</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 sm:p-6">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md sm:max-w-lg lg:max-w-xl p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800">
+                CREATE EVACUATION CENTER
+              </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -272,9 +268,7 @@ const SAEvacuation = () => {
                 ✕
               </button>
             </div>
-
             <div className="space-y-4">
-              {/* Evacuation Center Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Evacuation Center Name
@@ -287,9 +281,7 @@ const SAEvacuation = () => {
                   placeholder="Butuan Central Elementary School"
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Location */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Location
@@ -302,8 +294,6 @@ const SAEvacuation = () => {
                     placeholder="A.D Curato Street, Butuan City"
                   />
                 </div>
-
-                {/* Capacity */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Capacity
@@ -317,8 +307,6 @@ const SAEvacuation = () => {
                   />
                 </div>
               </div>
-
-              {/* Photo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Photo
@@ -326,9 +314,7 @@ const SAEvacuation = () => {
                 <div className="mt-1 flex items-center">
                   <input
                     type="text"
-                    value={
-                      image
-                    }
+                    value={image}
                     readOnly
                     className="input input-bordered w-full"
                     placeholder="No file selected"
@@ -345,9 +331,7 @@ const SAEvacuation = () => {
                 </div>
               </div>
               <hr />
-
-              {/* Submit Button */}
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 <button
                   onClick={handleSubmit}
                   className="btn bg-bttn text-white font-bold w-full hover:bg-bttn"
@@ -360,13 +344,13 @@ const SAEvacuation = () => {
         </div>
       )}
 
-
-
       {showBarangay && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-[500px] p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">EVACUATION CENTER</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 sm:p-6">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md sm:max-w-lg lg:max-w-xl p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800">
+                EVACUATION CENTER
+              </h2>
               <button
                 onClick={closeBarangay}
                 className="text-gray-500 hover:text-gray-700"
@@ -374,41 +358,33 @@ const SAEvacuation = () => {
                 ✕
               </button>
             </div>
-
             <div className="space-y-4">
-            
-              <div className="">
               <div className="mt-4">
                 {brgyData.map((brgy, index) => (
                   <div
                     key={index}
-                    className="p-3  rounded-md mb-2 flex items-center justify-between"
+                    className="p-3 rounded-md mb-2 flex items-center justify-between border border-gray-200"
                   >
                     <span>{brgy.name}</span>
                   </div>
                 ))}
               </div>
-              </div>
               <hr />
-
-              {/* Submit Button */}
-                <div className="mt-6 flex items-center space-x-4">
-            
+              <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <input
                   type="text"
                   name="brgy"
                   onChange={(e) => setBrgy(e.target.value)}
-                  className="input input-bordered flex-grow"
+                  className="input input-bordered w-full sm:w-auto flex-grow"
                   placeholder="Add Barangay"
                 />
                 <button
                   onClick={submitBarangay}
-                  className="btn bg-bttn text-white font-bold hover:bg-bttn"
+                  className="btn bg-bttn text-white font-bold w-full sm:w-auto hover:bg-bttn"
                 >
                   Add Barangay
                 </button>
               </div>
-
             </div>
           </div>
         </div>

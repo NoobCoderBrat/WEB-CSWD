@@ -10,6 +10,8 @@ import supabase from "../supabaseClient";
 const FamilyMembers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const head_id = sessionStorage.getItem("id");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [familyMembers, setFamilyMembers] = useState([
     {
       id: 1,
@@ -85,8 +87,12 @@ const FamilyMembers = () => {
           remarks: "",
         },
       ]);
+      setModalMessage("Family members added successfully!");
+      setShowModal(true);
     } catch (error) {
       console.error("Submission failed:", error);
+      setModalMessage(`Error: ${error.message}`);
+      setShowModal(true);
     } finally {
       setIsLoading(false);
     }
@@ -342,6 +348,25 @@ const FamilyMembers = () => {
           </div>
         </main>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
+            <div className="text-center">
+              <p className="text-lg font-semibold">{modalMessage}</p>
+              <div className="mt-4">
+                <button
+                  onClick={() => setShowModal(false)} // Close the modal
+                  className="btn bg-blue-500 text-white"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

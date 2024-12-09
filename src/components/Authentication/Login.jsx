@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import supabase from "../supabaseClient";
 
@@ -16,7 +15,6 @@ const Login = () => {
       .select("*")
       .eq("email", email)
       .single();
-
     if (data && data.password === password && data.email === email) {
       const id = data.id;
       sessionStorage.setItem("id", id);
@@ -33,7 +31,6 @@ const Login = () => {
       .select("*")
       .eq("email", email)
       .single();
-
     if (data && data.password === password && data.email === email) {
       const id = data.id;
       sessionStorage.setItem("id", id);
@@ -46,11 +43,19 @@ const Login = () => {
     }
   };
 
-  const check = () => {
-    if (email === "superadmin@gmail.com") {
-      superadmin();
-    } else {
-      admin();
+  const check = async () => {
+    setIsLoading(true);
+    try {
+      if (email === "superadmin@gmail.com") {
+        await superadmin();
+      } else {
+        await admin();
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,7 +63,7 @@ const Login = () => {
     <>
       <div className="flex justify-center items-center font-mono p-4 sm:p-10 bg-base-200 min-h-screen">
         <div className="w-full sm:w-96 md:w-1/3 p-6 sm:p-10 rounded-lg text-black shadow-2xl border bg-white">
-          <div className="flex justify-center sm:mt-20">
+          <div className="flex justify-center">
             <img src="logo.png" alt="gabay-image-logo" className="h-24 w-26" />
           </div>
           <h1 className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide mt-3 text-center">
@@ -121,13 +126,15 @@ const Login = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={check}
-                className="w-full btn bg-bttn hover:bg-dark text-white font-bold"
+                className={`w-full btn bg-bttn hover:bg-dark text-white font-bold ${
+                  isLoading ? "cursor-not-allowed" : ""
+                }`}
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
-                    <div className="loading loading-spinner rounded-full w-3 h-3 bg-black"></div>
-                    <span className="ml-2 text-black">Loading...</span>
+                    <div className="loading loading-spinner rounded-full w-3 h-3 bg-white"></div>
+                    <span>Loading...</span>
                   </div>
                 ) : (
                   "Sign in"

@@ -7,15 +7,12 @@ const FAQs = () => {
         <UserSidebar />
         <div className="flex-1 flex flex-col">
           <main className="flex-1 p-6 overflow-auto">
-            {/* Hide this on mobile view */}
             <p className="hidden sm:block text-gray-600 text-xl font-bold mt-2 mb-5 p-4">
               | Frequently Asked Questions
             </p>
             <hr />
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
               <div className="bg-white p-4 rounded-lg shadow-xl">
-                {/* About Evacuation Center */}
                 <h2 className="text-lg font-semibold text-txt mb-4">
                   About Evacuation Center
                 </h2>
@@ -81,8 +78,6 @@ const FAQs = () => {
                   </li>
                 </ul>
               </div>
-
-              {/* About Disaster Assistance Form */}
               <div className="bg-white p-4 rounded-lg shadow-xl">
                 <h2 className="text-lg font-semibold text-txt mb-4">
                   About Disaster Assistance Form

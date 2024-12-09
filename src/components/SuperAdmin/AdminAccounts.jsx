@@ -26,14 +26,16 @@ const AdminAccounts = () => {
   };
 
   const handleSubmit = async () => {
-    const { data, error } = await supabase.from("Admin").insert([{
-      fullname,
-      position,
-      email,
-      number,
-      password,
-      barangay,
-    }]);
+    const { data, error } = await supabase.from("Admin").insert([
+      {
+        fullname,
+        position,
+        email,
+        number,
+        password,
+        barangay,
+      },
+    ]);
     if (error) {
       console.error("Error inserting data:", error);
       alert("Error inserting data");
@@ -57,9 +59,9 @@ const AdminAccounts = () => {
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
         <SASidebar />
         <div className="flex-1 flex flex-col">
-          <main className="flex-1 p-4 sm:p-6 overflow-auto">
-            <div className="p-4 border-b flex justify-end gap-3">
-              <div className="relative">
+          <main className="flex-1 sm:p-6 overflow-auto p-3">
+            <div className="p-4 border-b flex flex-col sm:flex-row justify-end gap-3">
+              <div className="relative w-full sm:w-auto">
                 <input
                   type="text"
                   placeholder="Search..."
@@ -69,37 +71,37 @@ const AdminAccounts = () => {
                 />
               </div>
               <button
-                className="bg-bttn text-white px-4 py-2 rounded-md hover:bg-bttn"
+                className="bg-bttn text-white px-4 py-2 rounded-md hover:bg-bttn sm:ml-3 mt-3 sm:mt-0"
                 onClick={() => setShowCreateModal(true)}
               >
                 Create Account
               </button>
             </div>
             {/* Table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-white rounded-lg shadow">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         No
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Number
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Email
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Barangay
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Barangay Position
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Action
                       </th>
                     </tr>
@@ -107,22 +109,22 @@ const AdminAccounts = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredUsers.map((user, index) => (
                       <tr key={user.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                           {index + 1}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                           {user.fullname}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                           {user.number}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                           {user.email}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                           {user.barangay}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                           {user.position}
                         </td>
                         <td>

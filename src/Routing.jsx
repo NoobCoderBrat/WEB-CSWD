@@ -41,9 +41,6 @@ const Routing = () => {
       <Route path="/evacuationcenter" element={<EvacuationCenter />} />
       <Route path="/evacuationnotice" element={<EvacuationNotice />} />
       <Route path="/faqs" element={<FAQs />} />
-
-
-      
       <Route path="/admindashboard" element={<AdminDashboard />} />
       <Route path="/adminevacuation" element={<Evacuation />} />
       <Route path="/adminforms" element={<AdminForms />} />

@@ -8,7 +8,6 @@ const Forms = () => {
       <UserSidebar />
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-4 sm:p-6 overflow-auto">
-          {/* Show this only on screens larger than "sm" */}
           <div className="hidden sm:block">
             <p className="text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
               | Gabay Forms

@@ -17,7 +17,9 @@ const Evacuation = () => {
 
   const fetch_data = async () => {
     try {
-      const { error, data } = await supabase.from("EvacuationCenter").select("*");
+      const { error, data } = await supabase
+        .from("EvacuationCenter")
+        .select("*");
       if (error) throw error;
       setEvacuationCenters(data);
     } catch (error) {
@@ -42,10 +44,15 @@ const Evacuation = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this evacuation center?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this evacuation center?"
+    );
     if (confirmDelete) {
       try {
-        const { error } = await supabase.from("EvacuationCenter").delete().eq("id", id);
+        const { error } = await supabase
+          .from("EvacuationCenter")
+          .delete()
+          .eq("id", id);
         if (error) throw error;
         alert("Evacuation center deleted successfully!");
         fetch_data();
@@ -60,11 +67,11 @@ const Evacuation = () => {
   const handleSubmit = async () => {
     const { data, error } = await supabase.from("EvacuationCenter").insert([
       {
-       name,
-       location,
-       capacity,
-       image,
-       status : 'Open'
+        name,
+        location,
+        capacity,
+        image,
+        status: "Open",
       },
     ]);
     if (error) {
@@ -122,22 +129,22 @@ const Evacuation = () => {
     <div className="min-h-screen bg-gray-100 font-mono xl:flex">
       <AdminSidebar />
       <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-4 sm:p-6 overflow-auto">
-          <div className="bg-gray-100 p-6">
+        <main className="flex-1 sm:p-6 overflow-auto">
+          <div className="bg-gray-100 p-4">
             <div className="max-w-7xl mx-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h1 className="text-xl font-semibold text-gray-800">
+              <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
                   | List of Evacuation Centers
                 </h1>
                 <button
-                  className="bg-bttn text-white px-4 py-2 rounded-md hover:bg-bttn"
+                  className="bg-bttn text-white px-4 py-2 text-sm md:text-base rounded-md hover:bg-bttn w-full sm:w-auto"
                   onClick={() => setShowCreateModal(true)}
                 >
                   Create Evacuation Center
                 </button>
               </div>
               <hr />
-              <div className="grid md:grid-cols-2 gap-6 mt-8">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                 {evacuationCenters.map((center) => (
                   <div
                     key={center.id}
@@ -150,8 +157,12 @@ const Evacuation = () => {
                       className="w-full h-48 object-contain"
                     />
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold mb-2">{center.name}</h3>
-                      <div className="text-gray-600 mb-2">{center.location}</div>
+                      <h3 className="text-lg font-semibold mb-2">
+                        {center.name}
+                      </h3>
+                      <div className="text-gray-600 mb-2">
+                        {center.location}
+                      </div>
                       <div
                         className={`${
                           center.status === "Closed"
@@ -171,15 +182,9 @@ const Evacuation = () => {
       </div>
 
       {/* Create Modal */}
-      {showCreateModal &&(
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white p-6 rounded-lg shadow-xl w-96"
-            onClick={(e) => e.stopPropagation()}
-          >
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3 max-h-screen overflow-y-auto">
             <h2 className="text-xl font-semibold">Add Evacuation Center</h2>
             <div className="mt-4">
               <label>Name</label>
@@ -202,30 +207,28 @@ const Evacuation = () => {
               />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Photo
-                </label>
-                <div className="mt-1 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Photo
+              </label>
+              <div className="mt-1 flex items-center">
+                <input
+                  type="text"
+                  value={image}
+                  readOnly
+                  className="input input-bordered w-full"
+                  placeholder="No file selected"
+                />
+                <label className="btn bg-bttn text-white font-bold ml-2 cursor-pointer hover:bg-bttn">
+                  <span>Upload Photo</span>
                   <input
-                    type="text"
-                    value={
-                      image
-                    }
-                    readOnly
-                    className="input input-bordered w-full"
-                    placeholder="No file selected"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
                   />
-                  <label className="btn bg-bttn text-white font-bold ml-2 cursor-pointer hover:bg-bttn">
-                    <span>Upload Photo</span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                    />
-                  </label>
-                </div>
+                </label>
               </div>
+            </div>
             <div className="mt-4 flex justify-between">
               <button
                 className="bg-gray-500 text-white px-4 py-2 rounded-md"
@@ -247,11 +250,11 @@ const Evacuation = () => {
       {/* Update Modal */}
       {isModalOpen && selectedCenter && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onClick={closeModal}
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-xl w-96"
+            className="bg-white p-6 rounded-lg shadow-xl w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3 max-h-screen overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-xl font-semibold">Update Evacuation Center</h2>
@@ -287,7 +290,7 @@ const Evacuation = () => {
                 <option value="Closed">Closed</option>
               </select>
             </div>
-            <div className="mt-4 flex justify-between">
+            <div className="mt-4 flex justify-between gap-4">
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-md"
                 onClick={() => handleDelete(selectedCenter.id)}

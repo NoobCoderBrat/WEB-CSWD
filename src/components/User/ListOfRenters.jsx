@@ -9,17 +9,14 @@ import supabase from "../supabaseClient";
 
 const ListOfRenters = () => {
   const landlord_id = sessionStorage.getItem("id");
+  const [isLoading, setIsLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("");
   const [renters, setRenters] = useState([
     { id: 1, fullname: "", sex: "", rentalType: "" },
   ]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Modal States
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalType, setModalType] = useState(""); // "success" or "error"
-
-  // Function to add a new renter form
   const addRenter = () => {
     setRenters((prevRenters) => [
       ...prevRenters,
@@ -27,14 +24,12 @@ const ListOfRenters = () => {
     ]);
   };
 
-  // Function to delete a renter form
   const deleteRenter = (id) => {
     setRenters((prevRenters) =>
       prevRenters.filter((renter) => renter.id !== id)
     );
   };
 
-  // Function to handle input changes dynamically
   const handleInputChange = (id, field, value) => {
     setRenters((prevRenters) =>
       prevRenters.map((renter) =>
@@ -52,22 +47,18 @@ const ListOfRenters = () => {
         rental_type: renter.rentalType,
         landlord_id: landlord_id,
       }));
-
       const { data, error } = await supabase
         .from("Renters")
         .insert(rentersData);
-
+      console.log(data);
       if (error) {
         throw new Error(error.message);
       }
-
-      // Success response
       setRenters([{ id: 1, fullname: "", sex: "", rentalType: "" }]);
       setModalMessage("Renters have been successfully added!");
       setModalType("success");
       setModalOpen(true);
     } catch (error) {
-      // Error response
       setModalMessage("Failed to add renters. Please try again.");
       setModalType("error");
       setModalOpen(true);
@@ -84,14 +75,13 @@ const ListOfRenters = () => {
           <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
               <h2 className="text-2xl font-semibold italic flex gap-5 mt-1 sm:mt-0 sm:text-left text-center">
-                <NavLink to="/forms">
+                <NavLink to="/">
                   <button className="mt-1">
                     <IoArrowBackCircle />
                   </button>
                 </NavLink>
                 List of Renters
               </h2>
-              {/* Add Renter Button */}
               <button
                 className="btn bg-bttn font-bold text-white mt-4 sm:mt-0 sm:ml-4"
                 onClick={addRenter}
@@ -117,7 +107,6 @@ const ListOfRenters = () => {
                     <IoMdClose size={20} />
                   </button>
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
                   <div>
                     <label

@@ -29,7 +29,6 @@ const SACenter = () => {
     }));
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
@@ -58,9 +57,8 @@ const SACenter = () => {
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
         <SASidebar />
         <div className="flex-1 flex flex-col">
-          <main className="flex-1 p-4 sm:p-6 overflow-auto">
-            <div className="p-6">
-              {/* Header Section */}
+          <main className="flex-1 sm:p-6 overflow-auto">
+            <div className="p-4">
               <div className="flex justify-between items-center mb-6">
                 <div className="relative flex-1 max-w-md">
                   <input
@@ -79,59 +77,61 @@ const SACenter = () => {
 
               {/* Table */}
               <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Header
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Description
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date Posted
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {notifications.map((notification) => (
-                      <tr key={notification.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {notification.header}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
-                          {truncateDescription(notification.description)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {notification.datePosted}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                          <button
-                            onClick={() => handleView(notification)}
-                            className="btn btn-sm bg-bttn hover:bg-bttn text-white font-bold"
-                          >
-                            View
-                          </button>
-                          <button
-                            onClick={() => handleDelete(notification.id)}
-                            className="btn btn-error btn-sm text-white"
-                          >
-                            Delete
-                          </button>
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Header
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Date Posted
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {notifications.map((notification) => (
+                        <tr key={notification.id}>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {notification.header}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-500">
+                            {truncateDescription(notification.description)}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {notification.datePosted}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm space-x-2">
+                            <button
+                              onClick={() => handleView(notification)}
+                              className="btn btn-sm bg-bttn hover:bg-bttn text-white font-bold"
+                            >
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleDelete(notification.id)}
+                              className="btn btn-error btn-sm text-white"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               {/* Create Notification Modal */}
               {showCreateModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-lg p-6 w-[500px]">
+                  <div className="bg-white rounded-lg p-6 w-full max-w-md sm:max-w-lg">
                     <div className="flex justify-between items-center mb-6">
                       <h2 className="text-xl font-bold">CREATE NOTIFICATION</h2>
                       <button
@@ -169,7 +169,7 @@ const SACenter = () => {
                         />
                       </div>
 
-                     <button
+                      <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mt-6"
                       >
@@ -183,7 +183,7 @@ const SACenter = () => {
               {/* View Notification Modal */}
               {showViewModal && selectedNotification && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-lg p-8 w-[600px] border-2 border-yellow-400">
+                  <div className="bg-white rounded-lg p-8 w-full max-w-md sm:max-w-lg border-2 border-yellow-400">
                     <div className="flex items-center space-x-2 text-yellow-500 mb-4">
                       <svg
                         className="w-8 h-8"

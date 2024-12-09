@@ -11,17 +11,15 @@ import supabase from "../supabaseClient";
 const Landlord = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-
+  const [isLoading, setIsLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [barangay, setBarangay] = useState("");
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("Male");
 
   const handleSubmit = async () => {
-    setIsLoading(true); // Start loading animation
+    setIsLoading(true);
     try {
-      // Insert data into the LandLord table
       const { data, error } = await supabase
         .from("LandLord")
         .insert([
@@ -37,14 +35,13 @@ const Landlord = () => {
       if (error) {
         throw error;
       }
-
       const id = data[0].id;
       sessionStorage.setItem("id", id);
       setSubmitModalOpen(true);
     } catch (error) {
       console.error("Error submitting data:", error.message);
     } finally {
-      setIsLoading(false); // Stop loading animation
+      setIsLoading(false);
     }
   };
 
@@ -65,7 +62,7 @@ const Landlord = () => {
             <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
               <div className="flex justify-between mb-6">
                 <h2 className="text-2xl font-semibold italic flex gap-5 mt-1">
-                  <NavLink to="/forms">
+                  <NavLink to="/">
                     <button className="mt-1">
                       <IoArrowBackCircle />
                     </button>
@@ -145,12 +142,11 @@ const Landlord = () => {
                 </div>
                 <br />
                 <hr />
-
                 <div className="flex justify-end mt-10 gap-3">
                   <button
                     className="w-full sm:w-1/4 md:w-1/4 lg:w-1/4 px-4 py-2 bg-success text-white btn font-bold hover:bg-success flex items-center justify-center"
                     onClick={handleSubmit}
-                    disabled={isLoading} // Disable button during loading
+                    disabled={isLoading}
                   >
                     {isLoading ? (
                       <div className="animate-spin border-4 border-t-transparent border-white w-5 h-5 rounded-full mr-2"></div> // Loading spinner
@@ -168,7 +164,6 @@ const Landlord = () => {
               <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-3/4 md:w-1/3 lg:w-1/4 text-center">
                   {" "}
-                  {/* Responsive modal width */}
                   <h2 className="text-2xl font-bold text-green-600 mb-4">
                     Successfully Submitted!
                   </h2>

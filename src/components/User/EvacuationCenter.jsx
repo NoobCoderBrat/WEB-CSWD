@@ -75,15 +75,12 @@ const EvacuationCenter = () => {
         <main className="flex-1 p-4 sm:p-6 overflow-auto">
           <div className="bg-gray-100 p-4 sm:p-6">
             <div className="max-w-7xl mx-auto">
-              {/* Header */}
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
                 <h1 className="text-lg sm:text-xl font-semibold text-gray-800">
                   | List of Evacuation Center
                 </h1>
               </div>
               <hr />
-
-              {/* Navigation */}
               {activeView === "table" && (
                 <div className="mb-4 sm:mb-6 mt-4 sm:mt-8">
                   <div className="flex items-center space-x-2 text-sm text-blue-600">
@@ -100,7 +97,7 @@ const EvacuationCenter = () => {
 
               {/* Cards View */}
               {activeView === "cards" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-4 sm:mt-8">
                   {evacuationCenters.map((center) => (
                     <div
                       key={center.id}

@@ -25,7 +25,12 @@ const INEvacuaees = () => {
       textColor: "text-blue-600",
     },
     { icon: "♿", label: "PWD", count: pwd, textColor: "text-red-600" },
-    { icon: "👨‍🎓", label: "Students", count: student, textColor: "text-blue-600" },
+    {
+      icon: "👨‍🎓",
+      label: "Students",
+      count: student,
+      textColor: "text-blue-600",
+    },
     { icon: "👥", label: "4Ps Member", count: ps, textColor: "text-blue-600" },
     {
       icon: "👤",
@@ -50,7 +55,6 @@ const INEvacuaees = () => {
       "Time IN": evacuee.time_in,
       "Time OUT": evacuee.time_out,
     }));
-
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Evacuees");
@@ -124,9 +128,13 @@ const INEvacuaees = () => {
   }, []);
 
   const filteredData = evacuees.filter((user) => {
-    const nameMatches = user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const nameMatches =
+      user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase());
     const centerMatches = selectedCenter
-      ? user.evacuation_center && user.evacuation_center.toLowerCase().includes(selectedCenter.toLowerCase())
+      ? user.evacuation_center &&
+        user.evacuation_center
+          .toLowerCase()
+          .includes(selectedCenter.toLowerCase())
       : true;
     return nameMatches && centerMatches;
   });
@@ -141,30 +149,36 @@ const INEvacuaees = () => {
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
           <main className="flex-1 p-4 sm:p-6 overflow-auto">
-            <div className="flex justify-between items-center mt-5 p-4">
-              <h1 className="text-xl font-semibold text-gray-800">| Evacuees Data</h1>
+            <div className="flex justify-between items-center p-3">
+              <h1 className="text-xl font-semibold text-gray-800">
+                | Evacuees Data
+              </h1>
             </div>
-            <div className="p-6 max-w-7xl mx-auto">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
+            <div className="">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
                 {stats.map((stat, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                  <div
+                    key={index}
+                    className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"
+                  >
                     <span className="text-2xl">{stat.icon}</span>
                     <div>
-                      <span className={`text-2xl font-bold ${stat.textColor}`}>{stat.count}</span>
+                      <span className={`text-2xl font-bold ${stat.textColor}`}>
+                        {stat.count}
+                      </span>
                       <p className="text-sm text-gray-600">{stat.label}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="flex justify-between mt-10">
-                {/* Filters */}
-                <div className="flex flex-wrap gap-4 mb-6 justify-end">
+              <div className="flex flex-col lg:flex-row justify-between mt-10 mb-5">
+                {/* <div className="flex flex-wrap gap-4 mb-6 justify-start lg:justify-end w-full lg:w-auto"></div> */}
+                <div className="flex gap-3 flex-wrap lg:flex-nowrap justify-start lg:justify-end w-full lg:w-auto">
                   <select
                     value={selectedBarangay}
                     onChange={(e) => setSelectedBarangay(e.target.value)}
-                    className="border rounded-md px-3 py-2"
+                    className="border rounded-md px-3 py-2 w-full lg:w-auto"
                   >
                     <option>IN</option>
                     <option>OUT</option>
@@ -173,7 +187,7 @@ const INEvacuaees = () => {
                     id="evacuation-center"
                     value={selectedCenter}
                     onChange={(e) => setSelectedCenter(e.target.value)}
-                    className="border rounded-md px-3 py-2"
+                    className="border rounded-md px-3 py-2 w-full lg:w-auto"
                   >
                     <option value="">Select Evacuation Center</option>
                     {evacCenter.map((center) => (
@@ -187,23 +201,18 @@ const INEvacuaees = () => {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="border rounded-md px-3 py-2"
+                    className="border rounded-md px-3 py-2 w-full lg:w-auto"
                   />
-                </div>
-                {/* Export Button */}
-                <div className="flex gap-3">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="w-full pl-4 pr-10 py-2 border rounded-md"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="w-full pl-4 pr-10 py-2 border rounded-md"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                   <button
                     onClick={handleExportExcel}
-                    className="btn btn-success text-white font-bold"
+                    className="btn btn-success text-white font-bold w-full lg:w-auto"
                   >
                     <svg
                       className="w-5 h-5"
@@ -229,24 +238,48 @@ const INEvacuaees = () => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">ID</th>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Name</th>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Sex</th>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Evacuation Center</th>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Date</th>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Time</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          Sex
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          Evacuation Center
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          Date
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          Time
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {filteredData.map((evacuee) => (
                         <tr key={evacuee.id}>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{evacuee.id}</td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{evacuee.name}</td>
-                          <td className="px-6 py-4 text-sm text-gray-500">{evacuee.sex}</td>
-                          <td className="px-6 py-4 text-sm text-gray-500">{evacuee.evacuation_center}</td>
-                          <td className="px-6 py-4 text-sm text-gray-500">{evacuee.date}</td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            {evacuee.id}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            {evacuee.name}
+                          </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
-                            {selectedBarangay === "IN" ? evacuee.time_in : evacuee.time_out}
+                            {evacuee.sex}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {evacuee.evacuation_center}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {evacuee.date}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {selectedBarangay === "IN"
+                              ? evacuee.time_in
+                              : evacuee.time_out}
                           </td>
                         </tr>
                       ))}

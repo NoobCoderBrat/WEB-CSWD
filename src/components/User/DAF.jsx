@@ -84,7 +84,7 @@ const DAF = () => {
 
   return (
     <>
-      <div className="h-screen bg-gray-100 font-mono lg:flex">
+      <div className="min-h-screen bg-gray-100 font-mono lg:flex">
         <UserSidebar />
         <div className="flex-1 flex flex-col">
           <main className="flex-1 p-4 overflow-auto">
@@ -398,17 +398,17 @@ const DAF = () => {
       {/* Modal for Submit Button */}
       {submitModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75 z-50 font-mono">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/4 text-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-4/5 md:w-1/2 lg:w-1/3 xl:w-1/4 text-center">
             <img
               src={qrcode}
               alt="QR Code"
               className="mx-auto mb-4"
               style={{ width: "200px", height: "200px" }}
             />
-            <h2 className="text-2xl font-bold text-green-600 mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-green-600 mb-4">
               Successfully Submitted!
             </h2>
-            <p className="text-md mb-6">
+            <p className="text-md sm:text-lg mb-6">
               Your Disaster Assistance Form has been successfully submitted.
               Save QR Code above.
             </p>

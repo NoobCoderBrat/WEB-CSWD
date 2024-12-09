@@ -4,18 +4,16 @@ const Hotlines = () => {
   return (
     <>
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
-        <div className="sticky top-0 h-screen w-72">
-          <AdminSidebar />
-        </div>
+        <AdminSidebar />
         <div className="flex-1 flex flex-col overflow-y-auto">
-          <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
-            <p className="text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
+          <main className="flex-1 overflow-y-auto w-full">
+            <p className="hidden sm:block text-gray-600 text-lg sm:text-xl font-bold mt-2 mb-5 p-4">
               | Emergency Hotlines
             </p>
             <hr />
-            <div className="max-w-6xl mx-auto p-6 space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="max-w-full mx-auto p-4 space-y-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 w-full">
+                <div className="bg-white rounded-lg shadow-md p-6 w-full">
                   <h2 className="text-xl font-bold text-blue-800 mb-4">
                     <a href="#" className="hover:underline">
                       Butuan city Police Station
@@ -80,7 +78,7 @@ const Hotlines = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-lg shadow-md p-6 w-full">
                   <h2 className="text-xl font-bold text-blue-800 mb-4">
                     <a href="#" className="hover:underline">
                       Bureau of Fire Protection
@@ -107,8 +105,8 @@ const Hotlines = () => {
                   </div>
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="grid md:grid-cols-2 gap-6 w-full">
+                <div className="bg-white rounded-lg shadow-md p-6 w-full">
                   <h2 className="text-xl font-bold text-blue-800 mb-4">
                     <a href="#" className="hover:underline">
                       Butuan CDRRMO
@@ -133,7 +131,7 @@ const Hotlines = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-lg shadow-md p-6 w-full">
                   <h2 className="text-xl font-bold text-blue-800 mb-4">
                     <a href="#" className="hover:underline">
                       BCWD
@@ -155,7 +153,7 @@ const Hotlines = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-lg shadow-md p-6 w-full">
                 <h2 className="text-xl font-bold text-blue-800 mb-4">
                   <a href="#" className="hover:underline">
                     LTTMO - Butuan
@@ -166,9 +164,8 @@ const Hotlines = () => {
                   <p className="text-sm text-gray-600">(085) 342-3886</p>
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Coast Guard Card */}
-                <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="grid md:grid-cols-2 gap-6 w-full">
+                <div className="bg-white rounded-lg shadow-md p-6 w-full">
                   <h2 className="text-xl font-bold text-blue-800 mb-4">
                     <a href="#" className="hover:underline">
                       Philippines Coast Guard - Butuan
@@ -179,9 +176,7 @@ const Hotlines = () => {
                     <p className="text-sm text-gray-600">0951-091-4297</p>
                   </div>
                 </div>
-
-                {/* Aneco Card */}
-                <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-lg shadow-md p-6 w-full">
                   <h2 className="text-xl font-bold text-blue-800 mb-4">
                     <a href="#" className="hover:underline">
                       Aneco

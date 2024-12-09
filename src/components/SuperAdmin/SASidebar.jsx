@@ -6,7 +6,6 @@ import {
   FaUserShield,
   FaBell,
   FaPhone,
-  FaUser,
   FaSignOutAlt,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
@@ -33,8 +32,6 @@ const SASidebar = () => {
           <span className="text-2xl">&#9776;</span>
         </button>
       </div>
-
-      {/* Collapsible Mobile Menu */}
       {isMenuOpen && (
         <div className="lg:hidden bg-white shadow-md">
           <ul className="menu p-4 space-y-3">
@@ -118,7 +115,7 @@ const SASidebar = () => {
       )}
 
       {/* Sidebar for Large Screens */}
-      <div className="hidden lg:flex lg:min-h-screen lg:flex-col lg:w-72 lg:shadow-lg lg:bg-white">
+      <div className="hidden lg:flex lg:flex-col lg:w-72 lg:shadow-lg lg:bg-white sticky top-0 z-50 overflow-y-auto h-screen">
         <div className="flex items-center gap-3 px-6 py-6 border-b-2">
           <img src="logo.png" alt="logo" className="h-12 w-14" />
           <div>
@@ -203,7 +200,6 @@ const SASidebar = () => {
             <FaSignOutAlt /> Logout
           </NavLink>
         </ul>
-        {/* Footer */}
         <div className="p-4 border-t-2">
           <p className="text-sm text-gray-500 ms-3 font-bold">
             © 2024 Gabay. All rights reserved.
