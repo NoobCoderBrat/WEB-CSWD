@@ -1,25 +1,33 @@
 import SASidebar from "./SASidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import supabase from "../supabaseClient";
+
 
 const SACenter = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
-  const [notifications] = useState([
-    {
-      id: 1,
-      header: "NOTICE TO EVACUATION",
-      description:
-        "This is an official notice from your Local Government Unit. Due to rising floodwaters, all residents in Brgy. Buhangin are advised to evacuate immediately for your safety. Please proceed to the designated evacuation center at A.D. Curato Street, Butuan City. Stay safe and follow official updates.",
-      datePosted: "June 4, 2024",
-    },
-  ]);
-
+  const [notifications, setNotifications] = useState([]);
   const [formData, setFormData] = useState({
     header: "",
     description: "",
     photo: null,
   });
+
+  // Fetch notifications from Supabase on component mount
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const { data, error } = await supabase.from("Notifications").select("*");
+
+      if (error) {
+        console.error("Error fetching notifications:", error.message);
+      } else {
+        setNotifications(data);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -29,17 +37,40 @@ const SACenter = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
-    setShowCreateModal(false);
-    setFormData({ header: "", description: "", photo: null });
+
+    // Insert the new notification into the Supabase database
+    const { data, error } = await supabase
+      .from("Notifications")
+      .insert([
+        {
+          header: formData.header,
+          description: formData.description,
+        },
+      ]);
+
+    if (error) {
+      console.error("Error inserting notification:", error.message);
+    } else {
+     window.location.reload();
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     // Handle delete logic here
-    console.log("Deleting notification:", id);
+    const { error } = await supabase
+      .from("Notifications")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting notification:", error.message);
+    } else {
+      // Update the state after deletion
+      setNotifications(notifications.filter((notification) => notification.id !== id));
+      console.log("Notification deleted");
+    }
   };
 
   const handleView = (notification) => {
@@ -59,14 +90,7 @@ const SACenter = () => {
         <div className="flex-1 flex flex-col">
           <main className="flex-1 sm:p-6 overflow-auto">
             <div className="p-4">
-              <div className="flex justify-between items-center mb-6">
-                <div className="relative flex-1 max-w-md">
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-full px-4 py-2 border rounded-md"
-                  />
-                </div>
+              <div className="flex justify-end items-center mb-6">
                 <button
                   onClick={() => setShowCreateModal(true)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-4"
@@ -88,9 +112,6 @@ const SACenter = () => {
                           Description
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date Posted
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -103,9 +124,6 @@ const SACenter = () => {
                           </td>
                           <td className="px-4 py-4 text-sm text-gray-500">
                             {truncateDescription(notification.description)}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {notification.datePosted}
                           </td>
                           <td className="px-4 py-4 whitespace-nowrap text-sm space-x-2">
                             <button
@@ -156,9 +174,7 @@ const SACenter = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm mb-1">
-                          Description
-                        </label>
+                        <label className="block text-sm mb-1">Description</label>
                         <textarea
                           name="description"
                           value={formData.description}
