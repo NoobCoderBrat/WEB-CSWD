@@ -6,15 +6,16 @@ import { LuSend } from "react-icons/lu";
 import { IoMdPersonAdd } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import supabase from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const FamilyMembers = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const head_id = sessionStorage.getItem("id");
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [familyMembers, setFamilyMembers] = useState([
     {
-      id: 1,
       fullname: "",
       relation: "",
       dob: "",
@@ -31,7 +32,6 @@ const FamilyMembers = () => {
     setFamilyMembers((prevMembers) => [
       ...prevMembers,
       {
-        id: prevMembers.length + 1,
         fullname: "",
         relation: "",
         dob: "",
@@ -75,7 +75,6 @@ const FamilyMembers = () => {
       console.log("Successfully inserted Family Members:", data);
       setFamilyMembers([
         {
-          id: 1,
           fullname: "",
           relation: "",
           dob: "",
@@ -87,7 +86,8 @@ const FamilyMembers = () => {
           remarks: "",
         },
       ]);
-      setModalMessage("Family members added successfully!");
+      alert("YOU’VE SUCCESSFULLY SUBMITTED LIST OF YOUR FAMILY MEMBERS !");
+      navigate("/");
       setShowModal(true);
     } catch (error) {
       console.error("Submission failed:", error);
@@ -105,7 +105,7 @@ const FamilyMembers = () => {
         <main className="flex-1 p-4 overflow-auto">
           <div className="w-full mx-auto bg-white rounded shadow-lg p-6 md:p-10 border border-blue-100">
             <div className="flex flex-col md:flex-row justify-between mb-6">
-              <h2 className="text-xl md:text-2xl font-semibold italic mt-1 mb-4 md:mb-0">
+              <h2 className="text-xl md:text-2xl font-semibold mt-1 mb-4 md:mb-0">
                 <NavLink to="/daf">
                   <button className="mt-1">
                     <IoArrowBackCircle />
@@ -127,7 +127,7 @@ const FamilyMembers = () => {
               <div key={member.id} className="mb-8 mt-5">
                 <div className="flex justify-between items-center">
                   <div className="mb-4">
-                    <h3 className="text-md font-bold text-gray-700 italic">
+                    <h3 className="text-md font-bold text-gray-700 ">
                       Family #{member.id}
                     </h3>
                   </div>

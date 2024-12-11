@@ -74,7 +74,7 @@ const ListOfRenters = () => {
         <main className="flex-1 p-4 overflow-auto">
           <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-              <h2 className="text-2xl font-semibold italic flex gap-5 mt-1 sm:mt-0 sm:text-left text-center">
+              <h2 className="text-2xl font-semibold  flex gap-5 mt-1 sm:mt-0 sm:text-left text-center">
                 <NavLink to="/">
                   <button className="mt-1">
                     <IoArrowBackCircle />
@@ -96,7 +96,7 @@ const ListOfRenters = () => {
             {renters.map((renter, index) => (
               <div key={renter.id} className="mb-6 mt-5">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-md font-bold text-gray-700 italic">
+                  <h3 className="text-md font-bold text-gray-700 ">
                     Renter #{index + 1}
                   </h3>
                   <button

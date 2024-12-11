@@ -61,7 +61,7 @@ const Landlord = () => {
           <main className="flex-1 p-4 overflow-auto">
             <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
               <div className="flex justify-between mb-6">
-                <h2 className="text-2xl font-semibold italic flex gap-5 mt-1">
+                <h2 className="text-2xl font-semibold  flex gap-5 mt-1">
                   <NavLink to="/">
                     <button className="mt-1">
                       <IoArrowBackCircle />
@@ -72,7 +72,7 @@ const Landlord = () => {
               </div>
               <hr />
               <div className="mb-6 mt-5">
-                <h3 className="text-md font-bold italic text-gray-600 mb-4">
+                <h3 className="text-md font-bold  text-gray-600 mb-4">
                   Landlord's Information
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-7">

@@ -1,11 +1,13 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import supabase from "../supabaseClient";
 
 const AdminProfile = () => {
  const [profile, setProfile] = useState('');
  const [newPassword, setNewPassword]= useState('');
  const id = sessionStorage.getItem('id');
+ const [file, setFile] = useState("");
+ const fileInputRef = useRef(null);
 
  const fetch_profile = async () => {
   try {
@@ -60,6 +62,43 @@ const AdminProfile = () => {
     fetch_profile();
   }, []);
 
+
+  const handleImageClick = () => {
+    fileInputRef.current.click(); // Trigger the file input on image click
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      try {
+        const filePath = `${selectedFile.name}`;
+        const { data, error } = await supabase.storage
+          .from("Images")
+          .upload(filePath, selectedFile);
+        if (error) throw error;
+
+        const { data: publicURL, error: urlError } = supabase.storage
+          .from("Images")
+          .getPublicUrl(filePath);
+        if (urlError) throw urlError;
+
+        // Update profile picture in the database
+        await supabase
+          .from("Admin")
+          .update({ image: publicURL.publicUrl })
+          .eq("id", id);
+
+        // Update the state
+        setProfile((prev) => ({ ...prev, image: publicURL.publicUrl }));
+        window.location.reload();
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Error uploading image: " + error.message);
+      }
+    }
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
@@ -70,6 +109,20 @@ const AdminProfile = () => {
               <div className="w-full mx-auto bg-white rounded-lg shadow p-8">
                 {/* Profile Header */}
                 <div className="flex flex-col items-center mb-8">
+                <div className="relative">
+                    <img
+                      src={profile.image}
+                      alt="Profile"
+                      className="w-24 h-24 rounded-full object-cover border-2 border-white shadow"
+                      onClick={handleImageClick}
+                    />
+                    <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handlePhotoUpload}
+                    style={{ display: "none" }} // Hidden file input
+                  />
+                  </div>
                   <h1 className="mt-4 text-xl font-semibold text-gray-900">
                     {profile.fullname}
                   </h1>

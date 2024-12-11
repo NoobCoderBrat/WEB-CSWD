@@ -11,8 +11,8 @@ const AdminAccounts = () => {
   const [password, setPassword] = useState("");
   const [barangay, setBarangay] = useState("");
   const [users, setUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
-  const [showPassword, setShowPassword] = useState(false); // State for show password
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [showPassword, setShowPassword] = useState(false); 
 
   const fetch_data = async () => {
     try {
@@ -53,6 +53,23 @@ const AdminAccounts = () => {
   const filteredUsers = users.filter((user) =>
     user.fullname.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleDelete = async (id) => {
+    try {
+      const { error } = await supabase.from("Admin").delete().eq("id", id);
+      if (error) {
+        console.error("Error deleting user:", error);
+        alert("Failed to delete user.");
+      } else {
+        alert("User deleted successfully.");
+        setUsers(users.filter((user) => user.id !== id));
+      }
+    } catch (error) {
+      console.error("Unexpected error during deletion:", error.message);
+      alert("An unexpected error occurred.");
+    }
+  };
+  
 
   return (
     <>
@@ -128,10 +145,13 @@ const AdminAccounts = () => {
                           {user.position}
                         </td>
                         <td>
-                          <button className="btn btn-sm btn-error text-white font-bold">
-                            delete
-                          </button>
-                        </td>
+                        <button
+                          onClick={() => handleDelete(user.id)}
+                          className="btn btn-sm btn-error text-white font-bold"
+                        >
+                          DELETE
+                        </button>
+                      </td>
                       </tr>
                     ))}
                   </tbody>

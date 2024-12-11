@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 
 const INEvacuaees = () => {
   const [selectedBarangay, setSelectedBarangay] = useState("IN"); // "IN" or "OUT"
-  const [selectedDate, setSelectedDate] = useState("2024-06-05");
+  const [selectedDate, setSelectedDate] = useState("");
   const [evacuees, setEvacuees] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [senior, setSenior] = useState("");
@@ -16,6 +16,7 @@ const INEvacuaees = () => {
   const barangay = sessionStorage.getItem("barangay");
   const [evacCenter, setEvacCenter] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const stats = [
     {
@@ -143,6 +144,17 @@ const INEvacuaees = () => {
     console.log("selectedCenter updated:", selectedCenter);
   }, [selectedCenter]);
 
+  const handleSort = () => {
+    const sortedData = [...filteredData].sort((a, b) => {
+      const indexA = filteredData.indexOf(a);
+      const indexB = filteredData.indexOf(b);
+      return sortOrder === "asc" ? indexA - indexB : indexB - indexA;
+    });
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setEvacuees(sortedData);
+  };
+  
+
   return (
     <>
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
@@ -245,9 +257,6 @@ const INEvacuaees = () => {
                           Name
                         </th>
                         <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
-                          Sex
-                        </th>
-                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
                           Evacuation Center
                         </th>
                         <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
@@ -256,19 +265,24 @@ const INEvacuaees = () => {
                         <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
                           Time
                         </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                          <button
+                            onClick={handleSort}
+                            className="text-sm text-blue-600"
+                          >
+                            {sortOrder === "asc" ? "▲" : "▼"} Index
+                          </button>
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredData.map((evacuee) => (
+                      {filteredData.map((evacuee, index) => (
                         <tr key={evacuee.id}>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                            {evacuee.id}
+                          {index + 1}
                           </td>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900">
                             {evacuee.name}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
-                            {evacuee.sex}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             {evacuee.evacuation_center}

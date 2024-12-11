@@ -1,6 +1,7 @@
 import AdminSidebar from "./AdminSidebar";
 import React, { useState, useEffect } from "react";
 import supabase from "../supabaseClient";
+import QRCode from "qrcode";
 
 const MasterList = () => {
   const [data, setData] = useState([]);
@@ -27,6 +28,7 @@ const MasterList = () => {
   const [sex, setSex] = useState("");
   const [education, setEducation] = useState("");
   const [occupation, setOccupation] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch data from the DAF table
   const fetch_data = async () => {
@@ -89,7 +91,7 @@ const MasterList = () => {
 
   // Handle editing a record
   const handleEdit = (item) => {
-    setEditingItem(item); // Set the item to be edited
+    setEditingItem(item); 
     setFormData({
       surname: item.surname,
       firstname: item.firstname,
@@ -103,6 +105,7 @@ const MasterList = () => {
   };
 
   const familyedit = (item) => {
+    setViewingFamilyMember(false);
     setSelectedMember(item);
     setFullName(item.fullname || "");
     setRelation(item.relation || "");
@@ -150,6 +153,44 @@ const MasterList = () => {
     }
   };
 
+  const filteredData = data.filter(
+    (item) =>
+      item.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.surname.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const downloadQR = async (item) => {
+    const name = item.firstname + " " + item.surname;
+    console.log(name)
+    try {
+      const dataURL = await QRCode.toDataURL(name);
+      const img = new Image();
+      img.src = dataURL;
+  
+      img.onload = () => {
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+     
+        ctx.drawImage(img, 0, 0);
+  
+ 
+        const jpgDataURL = canvas.toDataURL('image/jpeg');
+  
+   
+        const link = document.createElement('a');
+        link.href = jpgDataURL;
+        link.download = `${name}.jpg`;  
+        link.click(); 
+      };
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gray-100 font-mono xl:flex">
@@ -158,11 +199,21 @@ const MasterList = () => {
           <main className="flex-1 p-3 sm:p-6 overflow-auto">
             <div className="bg-gray-100 min-h-screen">
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="flex justify-between items-center mb-6 mt-5 p-4">
+                <div className="flex justify-between items-center  mt-5 p-4">
                   <h1 className="text-xl font-semibold text-gray-800">
                     | MasterList of DAF
                   </h1>
+                  <div className="p-4">
+                  <input
+                    type="text"
+                    placeholder="Search by Name"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
                 </div>
+                </div>
+             
                 <div className="overflow-x-auto">
                   <table className="w-full table-auto">
                     <thead className="bg-gray-50">
@@ -182,7 +233,7 @@ const MasterList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.map((item, index) => (
+                      {filteredData.map((item, index) => (
                         <tr key={item.id} className="border-b">
                           <td className="py-2 px-4 text-sm">{index + 1}</td>
                           <td className="py-2 px-4 text-sm">
@@ -208,6 +259,12 @@ const MasterList = () => {
                                 onClick={() => fetchFamilyMembers(item.id)}
                               >
                                 View Family
+                              </button>
+                              <button
+                                className="btn btn-sm bg-blue-500 text-white w-full sm:w-auto"
+                                onClick={() => downloadQR(item)}
+                              >
+                                Download QR
                               </button>
                             </div>
                           </td>
@@ -256,7 +313,7 @@ const MasterList = () => {
                             </button>
                             <button
                               className="btn"
-                              onClick={() => setEditingItem(false)} // Close modal
+                              onClick={() => setEditingItem(false)} 
                             >
                               Close
                             </button>

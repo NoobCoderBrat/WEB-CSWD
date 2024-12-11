@@ -25,6 +25,7 @@ const DAF = () => {
   const [status, setStatus] = useState("");
   const [housing, setHousing] = useState("");
   const [qrcode, setQrCode] = useState("");
+  const [barangay, setBarangay] = useState("");
 
   const handleSubmit = () => {
     setModalOpen(true);
@@ -47,6 +48,7 @@ const DAF = () => {
           disability,
           status,
           housing,
+          barangay,
         },
       ])
       .select();
@@ -90,7 +92,7 @@ const DAF = () => {
           <main className="flex-1 p-4 overflow-auto">
             <div className="w-full mx-auto bg-white rounded shadow-lg p-10 border border-blue-100">
               <div className="flex justify-start">
-                <h2 className="text-2xl font-semibold mb-6 italic flex gap-5">
+                <h2 className="text-2xl font-semibold mb-6  flex gap-5">
                   <NavLink to="/">
                     <button className="mt-1">
                       <IoArrowBackCircle />
@@ -101,7 +103,7 @@ const DAF = () => {
               </div>
               <hr />
               <div className="mb-6 mt-5">
-                <h3 className="text-md font-bold italic text-gray-600 mb-4">
+                <h3 className="text-md font-bold  text-gray-600 mb-4">
                   Head of the family
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -250,6 +252,21 @@ const DAF = () => {
                       placeholder="What type of disability"
                       value={disability}
                       onChange={(e) => setDisability(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="dob"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                   Barangay
+                    </label>
+                    <input
+                      type="text"
+                      id="barangay"
+                      className="input input-bordered w-full"
+                      value={barangay}
+                      onChange={(e) => setBarangay(e.target.value)}
                     />
                   </div>
                 </div>

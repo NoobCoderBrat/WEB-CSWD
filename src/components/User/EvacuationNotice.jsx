@@ -27,7 +27,7 @@ const EvacuationNotice = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col justify-center items-center text-gray-500 italic text-center">
+            <div className="flex flex-col justify-center items-center text-gray-500 text-center">
               <p>There's no notice as of the moment</p>
             </div>
           )}
