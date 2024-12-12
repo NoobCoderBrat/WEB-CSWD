@@ -4,7 +4,7 @@ import supabase from "../supabaseClient";
 import * as XLSX from "xlsx";
 
 const INEvacuaees = () => {
-  const [selectedBarangay, setSelectedBarangay] = useState("IN"); // "IN" or "OUT"
+  const [selectedBarangay, setSelectedBarangay] = useState("IN");
   const [selectedDate, setSelectedDate] = useState("");
   const [evacuees, setEvacuees] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,9 +137,16 @@ const INEvacuaees = () => {
           .toLowerCase()
           .includes(selectedCenter.toLowerCase())
       : true;
-    return nameMatches && centerMatches;
-  });
+    const dateMatches = selectedDate
+      ? user.date && user.date.startsWith(selectedDate)
+      : true;
+  
 
+    const timeOutMatches = selectedBarangay === "IN" || user.time_out !== null;
+  
+    return nameMatches && centerMatches && dateMatches && timeOutMatches;
+  });
+  
   useEffect(() => {
     console.log("selectedCenter updated:", selectedCenter);
   }, [selectedCenter]);

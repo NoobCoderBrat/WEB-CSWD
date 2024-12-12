@@ -160,7 +160,7 @@ const MasterList = () => {
   );
 
   const downloadQR = async (item) => {
-    const name = item.firstname + " " + item.surname;
+    const name = item.firstname + "" + item.surname;
     console.log(name)
     try {
       const dataURL = await QRCode.toDataURL(name);
