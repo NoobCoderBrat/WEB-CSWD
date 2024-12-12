@@ -279,7 +279,7 @@ const INEvacuaees = () => {
                       {filteredData.map((evacuee, index) => (
                         <tr key={evacuee.id}>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                          {index + 1}
+                        {evacuee.id}
                           </td>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900">
                             {evacuee.name}

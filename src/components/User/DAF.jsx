@@ -84,6 +84,18 @@ const DAF = () => {
     setSubmitModalOpen(false);
   };
 
+  const downloadQRCode = () => {
+    if (!qrcode) {
+      alert("No QR code available to download.");
+      return;
+    }
+  
+    const link = document.createElement("a");
+    link.href = qrcode;
+    link.download = `${firstname}_${surname}_QRCode.png`;
+    link.click();
+  }
+
   return (
     <>
       <div className="min-h-screen bg-gray-100 font-mono lg:flex">
@@ -430,6 +442,10 @@ const DAF = () => {
               Save QR Code above.
             </p>
             <div className="space-y-2">
+            <button className="w-full btn bg-bttn font-bold text-white hover:bg-bttn mb-3"
+            onClick={downloadQRCode}>
+                  Download QR
+                </button>
               <NavLink to="/familymembers">
                 <button className="w-full btn bg-bttn font-bold text-white hover:bg-bttn">
                   <IoMdPersonAdd size={18} />

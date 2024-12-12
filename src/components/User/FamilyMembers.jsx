@@ -16,6 +16,7 @@ const FamilyMembers = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [familyMembers, setFamilyMembers] = useState([
     {
+      id: 1,
       fullname: "",
       relation: "",
       dob: "",
@@ -32,6 +33,7 @@ const FamilyMembers = () => {
     setFamilyMembers((prevMembers) => [
       ...prevMembers,
       {
+        id: prevMembers.length + 1,
         fullname: "",
         relation: "",
         dob: "",
@@ -62,17 +64,21 @@ const FamilyMembers = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const familyData = familyMembers.map((member) => ({
+      const familyData = familyMembers.map(({ id, ...member }) => ({
         ...member,
         head_id,
       }));
+  
       const { data, error } = await supabase
         .from("FamilyMembers")
         .insert(familyData);
+  
       if (error) {
         throw new Error(error.message);
       }
+  
       console.log("Successfully inserted Family Members:", data);
+  
       setFamilyMembers([
         {
           fullname: "",
@@ -86,6 +92,7 @@ const FamilyMembers = () => {
           remarks: "",
         },
       ]);
+  
       alert("YOU’VE SUCCESSFULLY SUBMITTED LIST OF YOUR FAMILY MEMBERS !");
       navigate("/");
       setShowModal(true);
@@ -97,7 +104,7 @@ const FamilyMembers = () => {
       setIsLoading(false);
     }
   };
-
+  
   return (
     <div className="h-screen bg-gray-100 font-mono lg:flex">
       <UserSidebar />
