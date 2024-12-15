@@ -34,6 +34,7 @@ const SAEvacuation = () => {
 
   const handleCardClick = (center) => {
     fetch_barangay(center);
+    setselectedID(center.id);
     setShowBarangay(true);
   };
 

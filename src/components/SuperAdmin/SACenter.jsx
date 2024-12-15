@@ -40,7 +40,7 @@ const SACenter = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Insert the new notification into the Supabase database
+
     const { data, error } = await supabase
       .from("Notifications")
       .insert([

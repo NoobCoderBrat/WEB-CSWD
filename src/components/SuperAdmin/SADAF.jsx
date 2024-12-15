@@ -49,7 +49,7 @@ const SADAF = () => {
     doc.setFontSize(16);
     doc.text(`Evacuees Report - ${selectedBarangay}`, 20, 20);
 
-    const tableData = evacuees.map((evacuee) => [
+    const tableData = filteredData.map((evacuee) => [
       evacuee.id,
       evacuee.name,
       evacuee.evacuation_center,
